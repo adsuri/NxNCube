@@ -4,6 +4,6 @@
 #include <string>
 
 int main() {
-    NxNCube cube(5);
+    NxNCube cube(6);
     cube.draw();
 }
