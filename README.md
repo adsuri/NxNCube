@@ -1,0 +1,1 @@
+A C++ program that simulates an NxNxN Rubik's Cube by using a 2D net that is printed in the terminal.

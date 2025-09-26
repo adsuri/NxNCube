@@ -7,5 +7,7 @@ CXXFLAGS ?= --std=c++17 -Wall -Werror -pedantic -g -Wno-sign-compare -Wno-commen
 game.exe: game.cpp NxNCube.cpp
 	$(CXX) $(CXXFLAGS) $^ -o $@
 
+.SUFFIXES:
+
 clean:
 	rm -rvf *.exe *.out.txt *.out.ppm *.dSYM *.stackdump
