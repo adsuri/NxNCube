@@ -88,6 +88,7 @@ int main(int argc, char *argv[]) {
 
   while (true) {
     clear_draw(cube);
+    std::cout << "Valid moves are: {'u', 'ui', 'u2', 'l', 'li', 'l2', 'f', 'fi', 'f2', 'r', 'ri', 'r2', 'b', 'bi', 'b2', 'd', 'di', 'd2'}" << std::endl;
 
     std::cout << "What move?: ";
     std::cin >> input;

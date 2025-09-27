@@ -129,4 +129,9 @@ void NxNCube::move(std::string move, int depth) {
       this->front[layer] = temp_back;
     }
   }
+  
+  else {
+    std::cout << "You *really* shouldn't have gotten here" << std::endl;
+    assert(false);
+  }
 }
