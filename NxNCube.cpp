@@ -2,6 +2,7 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <cassert>
 
 NxNCube::NxNCube(int layers)
  : n(layers),
@@ -11,6 +12,39 @@ NxNCube::NxNCube(int layers)
    right(layers, std::vector<std::string>(layers, NxNCube::red)),
    back(layers, std::vector<std::string>(layers, NxNCube::blue)),
    bottom(layers, std::vector<std::string>(layers, NxNCube::yellow)) {}
+
+void NxNCube::rotate_cw(std::vector<std::vector<std::string>> &face) {
+  std::vector<std::vector<std::string>> temp(this->n, std::vector<std::string>(this->n, ""));
+
+  for (size_t r = 0; r < this->n; ++r) {
+    for (size_t c = 0; c < this->n; ++c) {
+      temp[c][this->n - 1 - r] = face[r][c];
+    }
+  }
+  face = temp;
+};
+
+void NxNCube::rotate_ccw(std::vector<std::vector<std::string>> &face) {
+  std::vector<std::vector<std::string>> temp(this->n, std::vector<std::string>(this->n, ""));
+
+  for (size_t r = 0; r < this->n; ++r) {
+    for (size_t c = 0; c < this->n; ++c) {
+      temp[this->n - 1 - c][r] = face[r][c];
+    }
+  }
+  face = temp;
+};
+
+void NxNCube::rotate_half_turn(std::vector<std::vector<std::string>> &face) {
+  std::vector<std::vector<std::string>> temp(this->n, std::vector<std::string>(this->n, ""));
+
+  for (size_t r = 0; r < this->n; ++r) {
+    for (size_t c = 0; c < this->n; ++c) {
+      temp[this->n - 1 - r][this->n - 1 - c] = face[r][c];
+    }
+  }
+  face = temp;
+};
 
 void NxNCube::printColors() {
   std::cout << NxNCube::white 
@@ -60,6 +94,39 @@ void NxNCube::draw() const {
   }
 }
 
-void NxNCube::turn_cw(std::string side, int depth) {}
+void NxNCube::move(std::string move, int depth) {
+  if (move == "u") {
+    this->rotate_cw(this->top);
 
-void NxNCube::turn_ccw(std::string side, int depth) {}
+    for (int layer = 0; layer < depth; ++layer) {
+      std::vector<std::string> temp_left = this->left[layer];
+      this->left[layer] = this->front[layer];
+      this->front[layer] = this->right[layer];
+      this->right[layer] = this->back[layer];
+      this->back[layer] = temp_left;
+    }
+  } else if (move == "ui") {
+    this->rotate_ccw(this->top);
+
+    for (int layer = 0; layer < depth; ++layer) {
+      std::vector<std::string> temp_back = this->back[layer];
+
+      this->back[layer] = this->right[layer];
+      this->right[layer] = this->front[layer];
+      this->front[layer] = this->left[layer];
+      this->left[layer] = temp_back;
+    }
+  } else if (move == "u2") {
+    this->rotate_half_turn(this->top);
+
+    for (int layer = 0; layer < depth; ++layer) {
+      std::vector<std::string> temp_left = this->left[layer];
+      std::vector<std::string> temp_back = this->back[layer];
+
+      this->left[layer] = this->right[layer];
+      this->right[layer] = temp_left;
+      this->back[layer] = this->front[layer];
+      this->front[layer] = temp_back;
+    }
+  }
+}

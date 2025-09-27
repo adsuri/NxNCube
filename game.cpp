@@ -100,6 +100,7 @@ int main(int argc, char *argv[]) {
       std::cin >> input;
       input = string_lower(input);
     }
+    std::string side = input;
 
     std::cout << "How many layers?: " ;
     std::cin >> input;
@@ -109,5 +110,7 @@ int main(int argc, char *argv[]) {
       std::cin >> input;
       input = string_lower(input);
     }
+    int layers = std::stoi(input);
+    cube.move(side, layers);
   }
 }
