@@ -47,7 +47,9 @@ bool valid_move(std::string input) {
                                           "d", "di", "d2"};
   input = string_lower(input);
 
-  if (str_in_vector(valid_moves, input)) {return true;}
+  if (str_in_vector(valid_moves, input)) {
+    return true;
+  }
 
   return false;
 }
