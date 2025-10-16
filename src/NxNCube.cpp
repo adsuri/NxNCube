@@ -3,6 +3,7 @@
 #include <string>
 #include <vector>
 #include <cassert>
+#include <algorithm>
 
 NxNCube::NxNCube(int layers)
  : n(layers),
@@ -45,6 +46,41 @@ void NxNCube::rotate_half_turn(std::vector<std::vector<std::string>> &face) {
   }
   face = temp;
 };
+
+
+void NxNCube::clear_console() {
+  std::cout << "\033[H\033[2J0" << std::endl;
+} // static
+
+bool NxNCube::is_positive_int(std::string str) {
+  for (size_t i = 0; i < str.size(); ++i) {
+    if (!std::isdigit(str[i])) {
+      return false;
+    }
+  }
+  return true;
+} // static
+
+void NxNCube::clear_draw() const {
+  NxNCube::clear_console();
+  this->draw();
+}
+
+bool NxNCube::str_in_vector(const std::vector<std::string> &str, std::string value) {
+  for (size_t i = 0; i < str.size(); ++i) {
+    if (str[i] == value) {
+      return true;
+    }
+  }
+  return false;
+} // static
+
+std::string string_lower(std::string str) {
+  std::transform(str.begin(), str.end(), str.begin(),
+    [](unsigned char c){return std::tolower(c);});
+  return str;
+} // static
+
 
 void NxNCube::printColors() {
   std::cout << NxNCube::white 
@@ -134,4 +170,8 @@ void NxNCube::move(std::string move, int depth) {
     std::cout << "You *really* shouldn't have gotten here" << std::endl;
     assert(false);
   }
+}
+
+void NxNCube::play() {
+
 }

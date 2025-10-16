@@ -13,8 +13,6 @@ private:
   std::vector<std::vector<std::string>> back;
   std::vector<std::vector<std::string>> bottom;
 
-public:
-
   // REQUIRES: face is this->top, left, front, right, back, or bottom
   // MODIFIES: Appropriate side of cube
   // EFFECTS: Rotates the nested vector representing the side of the cube by 90 degrees clockwise.
@@ -30,7 +28,7 @@ public:
   // EFFECTS: Rotates the nested vector representing the side of the cube by 180 degrees.
   void rotate_half_turn(std::vector<std::vector<std::string>> &face);
 
-// public:
+public:
   inline static const std::string white = "\033[1;38;2;255;255;255;49mW\033[0m";
   inline static const std::string orange = "\033[1;38;2;255;165;0;49mO\033[0m";
   inline static const std::string green = "\033[1;38;2;0;255;0;49mG\033[0m";
@@ -38,12 +36,25 @@ public:
   inline static const std::string blue = "\033[1;38;2;0;0;255;49mB\033[0m";
   inline static const std::string yellow = "\033[1;38;2;255;255;0;49mY\033[0m";
 
-  // REQUIRES: layers is an int || layers > 0
+  // EFFECTS: Clears the console
+  static void clear_console();
+
+  // EFFECTS: Returns true if str is a positive integer
+  static bool is_positive_int(std::string str);
+
+  static bool str_in_vector(const std::vector<std::string> &str, std::string value);
+
+  static std::string string_lower(std::string str);
+
+  // REQUIRES: layers > 0
   // EFFECTS: Initializes an NxNCube object with 6 layers x layers nested vectors representing each side of a cube.
   NxNCube(int layers);
 
   // EFFECTS: Prints a 2d net representing the cube onto the terminal.
   void draw() const;
+
+  // EFFECTS: Clears the console and calls this->draw()
+  void clear_draw() const;
 
   // REQUIRES: move is in {"u", "ui", "u2", "l", "li", "l2", "f", "fi", "f2", "r", "ri", "r2", "b", "bi", "b2", "d", "di", "d2"}, 
   // MODIFIES: All relevant faces
@@ -51,6 +62,8 @@ public:
   void move(std::string move, int depth);
 
   void printColors();
+
+  void play();
 };
 
 #endif
