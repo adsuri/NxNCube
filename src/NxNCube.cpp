@@ -66,14 +66,14 @@ void NxNCube::clear_draw() const {
   this->draw();
 }
 
-bool NxNCube::str_in_vector(std::vector<std::string> str, std::string value) {
-  for (size_t i = 0; i < str.size(); ++i) {
-    if (str[i] == value) {
-      return true;
-    }
-  }
-  return false;
-} // static
+// bool NxNCube::str_in_vector(std::vector<std::string> str, std::string value) {
+//   for (size_t i = 0; i < str.size(); ++i) {
+//     if (str[i] == value) {
+//       return true;
+//     }
+//   }
+//   return false;
+// } // static
 
 std::string NxNCube::string_lower(std::string str) {
   std::transform(str.begin(), str.end(), str.begin(),
@@ -84,10 +84,11 @@ std::string NxNCube::string_lower(std::string str) {
 bool NxNCube::valid_move(std::string &input) {
   input = NxNCube::string_lower(input);
 
-  if (NxNCube::str_in_vector(NxNCube::moves, input)) {
-    return true;
+  for (size_t i = 0; i < NxNCube::moves.size(); ++i) {
+    if (NxNCube::moves[i] == input) {
+      return true;
+    }
   }
-
   return false;
 } // static
 
@@ -168,7 +169,7 @@ void NxNCube::move(std::string move, int depth) {
       this->back[layer] = temp_left;
     }
 
-    if (depth = this->n) {
+    if (depth == this->n) {
       this->rotate_ccw(this->bottom);
     }
   } else if (move == "ui") {
@@ -183,7 +184,7 @@ void NxNCube::move(std::string move, int depth) {
       this->left[layer] = temp_back;
     }
 
-    if (depth = this->n) {
+    if (depth == this->n) {
       this->rotate_cw(this->bottom);
     }
   } else if (move == "u2") {
@@ -199,11 +200,19 @@ void NxNCube::move(std::string move, int depth) {
       this->front[layer] = temp_back;
     }
 
-    if (depth = this->n) {
+    if (depth == this->n) {
       this->rotate_half_turn(this->bottom);
     }
   }
   
+  else if (move == "d") {
+
+  } else if (move == "di") {
+
+  } else if (move == "d2") {
+
+  }
+
   else {
     std::cout << "You *really* shouldn't have gotten here" << std::endl;
     assert(false);

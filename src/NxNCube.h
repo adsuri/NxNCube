@@ -28,8 +28,8 @@ private:
   // EFFECTS: Rotates the nested vector representing the side of the cube by 180 degrees.
   void rotate_half_turn(std::vector<std::vector<std::string>> &face);
 
-  // EFFECTS: Returns true if value is in str
-  static bool str_in_vector(std::vector<std::string> str, std::string value);
+  // // EFFECTS: Returns true if value is in str
+  // static bool str_in_vector(std::vector<std::string> str, std::string value);
 
   // EFFECTS: Returns str with all characters converted to lowercase
   static std::string string_lower(std::string str);
