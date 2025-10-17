@@ -4,7 +4,7 @@ CXX ?= g++
 
 CXXFLAGS ?= --std=c++17 -Wall -Werror -pedantic -g -Wno-sign-compare -Wno-comment --std=c++17 -Wall -Werror -pedantic -g -fsanitize=address -fsanitize=undefined -D_GLIBCXX_DEBUG
 
-builds/game.exe: src/game.cpp src/NxNCube.cpp
+builds/nxncube.exe: src/game.cpp src/NxNCube.cpp
 	$(CXX) $(CXXFLAGS) $^ -o $@
 
 .SUFFIXES:
