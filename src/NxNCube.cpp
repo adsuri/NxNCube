@@ -81,23 +81,17 @@ std::string NxNCube::string_lower(std::string str) {
   return str;
 } // static
 
-bool NxNCube::valid_move(std::string input) {
-  std::vector<std::string> valid_moves = {"u", "ui", "u2",
-                                          "l", "li", "l2",
-                                          "f", "fi", "f2",
-                                          "r", "ri", "r2",
-                                          "b", "bi", "b2",
-                                          "d", "di", "d2"};
+bool NxNCube::valid_move(std::string &input) {
   input = NxNCube::string_lower(input);
 
-  if (NxNCube::str_in_vector(valid_moves, input)) {
+  if (NxNCube::str_in_vector(NxNCube::moves, input)) {
     return true;
   }
 
   return false;
 } // static
 
-bool NxNCube::valid_move_layers(std::string input, int n) {
+bool NxNCube::valid_move_layers(std::string &input, int n) {
   input = NxNCube::string_lower(input);
   if (!NxNCube::is_positive_int(input)) {
     return false;
@@ -173,6 +167,10 @@ void NxNCube::move(std::string move, int depth) {
       this->right[layer] = this->back[layer];
       this->back[layer] = temp_left;
     }
+
+    if (depth = this->n) {
+      this->rotate_ccw(this->bottom);
+    }
   } else if (move == "ui") {
     this->rotate_ccw(this->top);
 
@@ -183,6 +181,10 @@ void NxNCube::move(std::string move, int depth) {
       this->right[layer] = this->front[layer];
       this->front[layer] = this->left[layer];
       this->left[layer] = temp_back;
+    }
+
+    if (depth = this->n) {
+      this->rotate_cw(this->bottom);
     }
   } else if (move == "u2") {
     this->rotate_half_turn(this->top);
@@ -196,6 +198,10 @@ void NxNCube::move(std::string move, int depth) {
       this->back[layer] = this->front[layer];
       this->front[layer] = temp_back;
     }
+
+    if (depth = this->n) {
+      this->rotate_half_turn(this->bottom);
+    }
   }
   
   else {
@@ -205,5 +211,40 @@ void NxNCube::move(std::string move, int depth) {
 }
 
 void NxNCube::play() {
+  std::string input;
 
+  while (true) {
+    this->clear_draw();
+    std::cout << "Valid moves are: {'u', 'ui', 'u2', 'l', 'li', 'l2', 'f', 'fi', 'f2', 'r', 'ri', 'r2', 'b', 'bi', 'b2', 'd', 'di', 'd2'}" << std::endl;
+
+    std::cout << "What move?: ";
+    std::cin >> input;
+    input = NxNCube::string_lower(input);
+
+    if(input == "done") {return;}
+
+    while (!NxNCube::valid_move(input)) {
+      std::cout << "Invalid move, try again: ";
+      std::cin >> input;
+      input = NxNCube::string_lower(input);
+      if(input == "done") {return;}
+    }
+    std::string side = input;
+
+    std::cout << "How many layers?: " ;
+    std::cin >> input;
+
+    if(input == "done") {return;}
+
+    while (!NxNCube::valid_move_layers(input, this->n)) {
+      std::cout << "Invalid number of layers, try again: ";
+      std::cin >> input;
+      input = NxNCube::string_lower(input);
+
+      if(input == "done") {return;}
+    }
+
+    int layers = std::stoi(input);
+    this->move(side, layers);
+  }
 }
