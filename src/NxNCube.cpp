@@ -66,15 +66,6 @@ void NxNCube::clear_draw() const {
   this->draw();
 }
 
-// bool NxNCube::str_in_vector(std::vector<std::string> str, std::string value) {
-//   for (size_t i = 0; i < str.size(); ++i) {
-//     if (str[i] == value) {
-//       return true;
-//     }
-//   }
-//   return false;
-// } // static
-
 std::string NxNCube::string_lower(std::string str) {
   std::transform(str.begin(), str.end(), str.begin(),
     [](unsigned char c){return std::tolower(c);});
@@ -108,16 +99,6 @@ bool NxNCube::valid_move_layers(std::string &input, int n) {
 
   return true;
 } // static
-
-void NxNCube::printColors() {
-  std::cout << NxNCube::white 
-    << NxNCube::orange
-    << NxNCube::green
-    << NxNCube::red
-    << NxNCube::blue
-    << NxNCube::yellow
-    << std::endl;
-}
 
 void NxNCube::draw() const {
   // top face
