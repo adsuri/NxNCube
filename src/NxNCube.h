@@ -42,9 +42,17 @@ public:
   // EFFECTS: Returns true if str is a positive integer
   static bool is_positive_int(std::string str);
 
-  static bool str_in_vector(const std::vector<std::string> &str, std::string value);
+  // EFFECTS: Returns true if value is in str
+  static bool str_in_vector(std::vector<std::string> str, std::string value);
 
+  // EFFECTS: Returns str with all characters converted to lowercase
   static std::string string_lower(std::string str);
+
+  // EFFECTS: Returns true if input is a valid move
+  static bool valid_move(std::string input);
+
+  // EFFECTS: Returns true if input is a valid amount of layers for a nxn NxNCube
+  static bool valid_move_layers(std::string input, int n);
 
   // REQUIRES: layers > 0
   // EFFECTS: Initializes an NxNCube object with 6 layers x layers nested vectors representing each side of a cube.

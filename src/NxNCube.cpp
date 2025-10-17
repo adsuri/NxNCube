@@ -66,7 +66,7 @@ void NxNCube::clear_draw() const {
   this->draw();
 }
 
-bool NxNCube::str_in_vector(const std::vector<std::string> &str, std::string value) {
+bool NxNCube::str_in_vector(std::vector<std::string> str, std::string value) {
   for (size_t i = 0; i < str.size(); ++i) {
     if (str[i] == value) {
       return true;
@@ -75,12 +75,44 @@ bool NxNCube::str_in_vector(const std::vector<std::string> &str, std::string val
   return false;
 } // static
 
-std::string string_lower(std::string str) {
+std::string NxNCube::string_lower(std::string str) {
   std::transform(str.begin(), str.end(), str.begin(),
     [](unsigned char c){return std::tolower(c);});
   return str;
 } // static
 
+bool NxNCube::valid_move(std::string input) {
+  std::vector<std::string> valid_moves = {"u", "ui", "u2",
+                                          "l", "li", "l2",
+                                          "f", "fi", "f2",
+                                          "r", "ri", "r2",
+                                          "b", "bi", "b2",
+                                          "d", "di", "d2"};
+  input = NxNCube::string_lower(input);
+
+  if (NxNCube::str_in_vector(valid_moves, input)) {
+    return true;
+  }
+
+  return false;
+} // static
+
+bool NxNCube::valid_move_layers(std::string input, int n) {
+  input = NxNCube::string_lower(input);
+  if (!NxNCube::is_positive_int(input)) {
+    return false;
+  }
+
+  if (std::stoi(input) == 0) {
+    return false;
+  }
+
+  if (std::stoi(input) > n) {
+    return false;
+  }
+
+  return true;
+} // static
 
 void NxNCube::printColors() {
   std::cout << NxNCube::white 
