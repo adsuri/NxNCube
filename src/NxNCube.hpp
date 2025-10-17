@@ -1,5 +1,5 @@
-#ifndef NxNCube_H
-#define NxNCube_H
+#ifndef NxNCube_HPP
+#define NxNCube_HPP
 #include <string>
 #include <vector>
 

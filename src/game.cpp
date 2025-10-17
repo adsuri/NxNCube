@@ -1,4 +1,4 @@
-#include "NxNCube.h"
+#include "NxNCube.hpp"
 #include <iostream>
 #include <vector>
 #include <string>

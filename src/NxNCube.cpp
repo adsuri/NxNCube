@@ -1,4 +1,4 @@
-#include "NxNCube.h"
+#include "NxNCube.hpp"
 #include <iostream>
 #include <string>
 #include <vector>
@@ -52,54 +52,6 @@ void NxNCube::clear_console() {
   std::cout << "\033[H\033[2J0" << std::endl;
 } // static
 
-bool NxNCube::is_positive_int(std::string str) {
-  for (size_t i = 0; i < str.size(); ++i) {
-    if (!std::isdigit(str[i])) {
-      return false;
-    }
-  }
-  return true;
-} // static
-
-void NxNCube::clear_draw() const {
-  NxNCube::clear_console();
-  this->draw();
-}
-
-std::string NxNCube::string_lower(std::string str) {
-  std::transform(str.begin(), str.end(), str.begin(),
-    [](unsigned char c){return std::tolower(c);});
-  return str;
-} // static
-
-bool NxNCube::is_valid_move(std::string &input) {
-  input = NxNCube::string_lower(input);
-
-  for (size_t i = 0; i < NxNCube::valid_moves.size(); ++i) {
-    if (NxNCube::valid_moves[i] == input) {
-      return true;
-    }
-  }
-  return false;
-} // static
-
-bool NxNCube::is_valid_depth(std::string &input, int n) {
-  input = NxNCube::string_lower(input);
-  if (!NxNCube::is_positive_int(input)) {
-    return false;
-  }
-
-  if (std::stoi(input) == 0) {
-    return false;
-  }
-
-  if (std::stoi(input) > n) {
-    return false;
-  }
-
-  return true;
-} // static
-
 void NxNCube::draw() const {
   // top face
   std::string filler((2*this->n), ' ');
@@ -138,6 +90,54 @@ void NxNCube::draw() const {
   }
   std::cout << NxNCube::CLEAR_COLOR;
 }
+
+void NxNCube::clear_draw() const {
+  NxNCube::clear_console();
+  this->draw();
+}
+
+bool NxNCube::is_positive_int(std::string str) {
+  for (size_t i = 0; i < str.size(); ++i) {
+    if (!std::isdigit(str[i])) {
+      return false;
+    }
+  }
+  return true;
+} // static
+
+std::string NxNCube::string_lower(std::string str) {
+  std::transform(str.begin(), str.end(), str.begin(),
+    [](unsigned char c){return std::tolower(c);});
+  return str;
+} // static
+
+bool NxNCube::is_valid_move(std::string &input) {
+  input = NxNCube::string_lower(input);
+
+  for (size_t i = 0; i < NxNCube::valid_moves.size(); ++i) {
+    if (NxNCube::valid_moves[i] == input) {
+      return true;
+    }
+  }
+  return false;
+} // static
+
+bool NxNCube::is_valid_depth(std::string &input, int n) {
+  input = NxNCube::string_lower(input);
+  if (!NxNCube::is_positive_int(input)) {
+    return false;
+  }
+
+  if (std::stoi(input) == 0) {
+    return false;
+  }
+
+  if (std::stoi(input) > n) {
+    return false;
+  }
+
+  return true;
+} // static
 
 void NxNCube::move(std::string move, int depth) {
   if (move == "u") {
