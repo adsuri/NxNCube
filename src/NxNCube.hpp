@@ -3,6 +3,15 @@
 #include <string>
 #include <vector>
 
+// bool str_in_vector(const std::vector<std::string> &str, std::string value) {
+//   for (size_t i = 0; i < str.size(); ++i) {
+//     if (str[i] == value) {
+//       return true;
+//     }
+//   }
+//   return false;
+// }
+
 class NxNCube {
 private:
   int n;
