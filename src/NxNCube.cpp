@@ -244,11 +244,26 @@ void NxNCube::move(std::string move, int depth) {
       this->rotate_half_turn(this->top);
     }
   } else if (move == "r") {
+    this->rotate_cw(this->right);
 
+    for (int layer = this->n - 1; layer >= this->n - depth; --layer) {
+      for (int r = 0; r < this->n; ++r) {
+        std::string temp = this->top[r][layer];
+
+        this->top[r][layer] = this->front[r][layer];
+        this->front[r][layer] = this->bottom[r][layer];
+        this->bottom[r][layer] = this->back[this->n - 1 - r][this->n - 1 - layer];
+        this->back[this->n - 1 - r][this->n - 1 - layer] = temp;
+      }
+    }
+
+    if (depth == this->n) {
+      this->rotate_ccw(this->left);
+    }
   } else if (move == "ri") {
 
   } else if (move == "r2") {
-    
+
   }
 
   else {
