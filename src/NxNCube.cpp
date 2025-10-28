@@ -48,7 +48,7 @@ void NxNCube::rotate_half_turn(std::vector<std::vector<std::string>> &face) {
 };
 
 
-void NxNCube::clear_console() {
+void NxNCube::CLEAR_CONSOLE() {
   std::cout << "\033[H\033[2J0" << std::endl;
 } // static
 
@@ -92,11 +92,11 @@ void NxNCube::draw() const {
 }
 
 void NxNCube::clear_draw() const {
-  NxNCube::clear_console();
+  NxNCube::CLEAR_CONSOLE();
   this->draw();
 }
 
-bool NxNCube::is_positive_int(std::string str) {
+bool NxNCube::IS_POSITIVE_INT(std::string str) {
   for (size_t i = 0; i < str.size(); ++i) {
     if (!std::isdigit(str[i])) {
       return false;
@@ -105,14 +105,14 @@ bool NxNCube::is_positive_int(std::string str) {
   return true;
 } // static
 
-std::string NxNCube::string_lower(std::string str) {
+std::string NxNCube::STRING_LOWER(std::string str) {
   std::transform(str.begin(), str.end(), str.begin(),
     [](unsigned char c){return std::tolower(c);});
   return str;
 } // static
 
-bool NxNCube::is_valid_move(std::string &input) {
-  input = NxNCube::string_lower(input);
+bool NxNCube::IS_VALID_MOVE(std::string &input) {
+  input = NxNCube::STRING_LOWER(input);
 
   for (size_t i = 0; i < NxNCube::valid_moves.size(); ++i) {
     if (NxNCube::valid_moves[i] == input) {
@@ -122,9 +122,9 @@ bool NxNCube::is_valid_move(std::string &input) {
   return false;
 } // static
 
-bool NxNCube::is_valid_depth(std::string &input, int n) {
-  input = NxNCube::string_lower(input);
-  if (!NxNCube::is_positive_int(input)) {
+bool NxNCube::IS_VALID_DEPTH(std::string &input, int n) {
+  input = NxNCube::STRING_LOWER(input);
+  if (!NxNCube::IS_POSITIVE_INT(input)) {
     return false;
   }
 
@@ -210,14 +210,14 @@ void NxNCube::play() {
 
     std::cout << "What move?: ";
     std::cin >> input;
-    input = NxNCube::string_lower(input);
+    input = NxNCube::STRING_LOWER(input);
 
     if(input == "done") {return;}
 
-    while (!NxNCube::is_valid_move(input)) {
+    while (!NxNCube::IS_VALID_MOVE(input)) {
       std::cout << "Invalid move, try again: ";
       std::cin >> input;
-      input = NxNCube::string_lower(input);
+      input = NxNCube::STRING_LOWER(input);
       if(input == "done") {return;}
     }
     std::string side = input;
@@ -227,10 +227,10 @@ void NxNCube::play() {
 
     if(input == "done") {return;}
 
-    while (!NxNCube::is_valid_depth(input, this->n)) {
+    while (!NxNCube::IS_VALID_DEPTH(input, this->n)) {
       std::cout << "Invalid number of layers, try again: ";
       std::cin >> input;
-      input = NxNCube::string_lower(input);
+      input = NxNCube::STRING_LOWER(input);
 
       if(input == "done") {return;}
     }
