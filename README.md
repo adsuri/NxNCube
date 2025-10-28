@@ -5,7 +5,7 @@ Instructions:
   1) Clone into this repository
   2) Install g++ if it is not installed already on your machine
   3) Install CMake if it is not installed already on your machine
-  4) To build the executable, run these commands in your terminal in the project directory:
+  4) To build the executable, run these commands in your terminal in the project directory:\n
     a) `cmake -s .B build`
     b) `cmake --build build`
   4) To run the executable, run this command in the project directory:
