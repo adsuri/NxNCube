@@ -47,9 +47,51 @@ void NxNCube::rotate_half_turn(std::vector<std::vector<std::string>> &face) {
   face = temp;
 };
 
+bool NxNCube::STR_IN_VECTOR(const std::vector<std::string> &str, std::string value) {
+  for (size_t i = 0; i < str.size(); ++i) {
+    if (str[i] == value) {
+      return true;
+    }
+  }
+  return false;
+} // static
 
-void NxNCube::CLEAR_CONSOLE() {
-  std::cout << "\033[H\033[2J0" << std::endl;
+bool NxNCube::IS_POSITIVE_INT(std::string str) {
+  for (size_t i = 0; i < str.size(); ++i) {
+    if (!std::isdigit(str[i])) {
+      return false;
+    }
+  }
+  return true;
+} // static
+
+std::string NxNCube::STRING_LOWER(std::string str) {
+  std::transform(str.begin(), str.end(), str.begin(),
+    [](unsigned char c){return std::tolower(c);});
+  return str;
+} // static
+
+bool NxNCube::IS_VALID_MOVE(std::string input) {
+  input = NxNCube::STRING_LOWER(input);
+
+  return NxNCube::STR_IN_VECTOR(NxNCube::VALID_MOVES, input);
+} // static
+
+bool NxNCube::IS_VALID_DEPTH(std::string input, int n) {
+  input = NxNCube::STRING_LOWER(input);
+  if (!NxNCube::IS_POSITIVE_INT(input)) {
+    return false;
+  }
+
+  if (std::stoi(input) == 0) {
+    return false;
+  }
+
+  if (std::stoi(input) > n) {
+    return false;
+  }
+
+  return true;
 } // static
 
 void NxNCube::draw() const {
@@ -91,55 +133,25 @@ void NxNCube::draw() const {
   std::cout << NxNCube::CLEAR_COLOR;
 }
 
+void NxNCube::CLEAR_CONSOLE() {
+  std::cout << "\033[H\033[2J0" << std::endl;
+} // static
+
 void NxNCube::clear_draw() const {
   NxNCube::CLEAR_CONSOLE();
   this->draw();
 }
 
-bool NxNCube::IS_POSITIVE_INT(std::string str) {
-  for (size_t i = 0; i < str.size(); ++i) {
-    if (!std::isdigit(str[i])) {
-      return false;
-    }
-  }
-  return true;
-} // static
-
-std::string NxNCube::STRING_LOWER(std::string str) {
-  std::transform(str.begin(), str.end(), str.begin(),
-    [](unsigned char c){return std::tolower(c);});
-  return str;
-} // static
-
-bool NxNCube::IS_VALID_MOVE(std::string &input) {
-  input = NxNCube::STRING_LOWER(input);
-
-  for (size_t i = 0; i < NxNCube::valid_moves.size(); ++i) {
-    if (NxNCube::valid_moves[i] == input) {
-      return true;
-    }
-  }
-  return false;
-} // static
-
-bool NxNCube::IS_VALID_DEPTH(std::string &input, int n) {
-  input = NxNCube::STRING_LOWER(input);
-  if (!NxNCube::IS_POSITIVE_INT(input)) {
-    return false;
-  }
-
-  if (std::stoi(input) == 0) {
-    return false;
-  }
-
-  if (std::stoi(input) > n) {
-    return false;
-  }
-
-  return true;
-} // static
-
 void NxNCube::move(std::string move, int depth) {
+  move = NxNCube::STRING_LOWER(move);
+
+  if (!NxNCube::IS_VALID_MOVE(move)) {
+    throw InvalidMoveException("Invalid move entered");
+  }
+  if (depth > this-> n) {
+    throw InvalidDepthException("Invalid depth entered");
+  }
+
   if (move == "u") {
     this->rotate_cw(this->top);
 
@@ -185,14 +197,58 @@ void NxNCube::move(std::string move, int depth) {
     if (depth == this->n) {
       this->rotate_half_turn(this->bottom);
     }
-  }
-  
-  else if (move == "d") {
+  } else if (move == "d") {
+    this->rotate_cw(this->bottom);
 
+    for (int layer = this->n - 1; layer >= this->n - depth; --layer) {
+      std::vector<std::string> temp = this->back[layer];
+
+      this->back[layer] = this->right[layer];
+      this->right[layer] = this->front[layer];
+      this->front[layer] = this->left [layer];
+      this->left[layer] = temp;
+    }
+
+    if (depth == this->n) {
+      this->rotate_ccw(this->top);
+    }
   } else if (move == "di") {
+    this->rotate_ccw(this->bottom);
 
+    for (int layer = this->n - 1; layer >= this->n - depth; --layer) {
+      std::vector<std::string> temp = this->left[layer];
+
+      this->left[layer] = this->front[layer];
+      this->front[layer] = this->right[layer];
+      this->right[layer] = this->back[layer];
+      this->back[layer] = temp;
+    }
+
+    if (depth == this->n) {
+      this->rotate_cw(this->top);
+    }
   } else if (move == "d2") {
+    this->rotate_half_turn(this->top);
 
+    for (int layer = this->n - 1; layer >= this->n - depth; -- layer) {
+      std::vector<std::string> temp_left = this->left[layer];
+      std::vector<std::string> temp_back = this->back[layer];
+
+      this->left[layer] = this->right[layer];
+      this->right[layer] = temp_left;
+      this->back[layer] = this->front[layer];
+      this->front[layer] = temp_back;
+    }
+
+    if (depth == this->n) {
+      this->rotate_half_turn(this->top);
+    }
+  } else if (move == "r") {
+
+  } else if (move == "ri") {
+
+  } else if (move == "r2") {
+    
   }
 
   else {

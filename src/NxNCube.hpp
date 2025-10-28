@@ -2,15 +2,7 @@
 #define NxNCube_HPP
 #include <string>
 #include <vector>
-
-// bool str_in_vector(const std::vector<std::string> &str, std::string value) {
-//   for (size_t i = 0; i < str.size(); ++i) {
-//     if (str[i] == value) {
-//       return true;
-//     }
-//   }
-//   return false;
-// }
+#include <exception>
 
 class NxNCube {
 private:
@@ -28,7 +20,7 @@ private:
   inline static const std::string BLUE = "\033[1;38;2;0;0;255;49mB";
   inline static const std::string YELLOW = "\033[1;38;2;255;255;0;49mY";
   inline static const std::string CLEAR_COLOR = "\033[0m";
-  inline static const std::vector<std::string> valid_moves = {"u", "ui", "u2",
+  inline static const std::vector<std::string> VALID_MOVES = {"u", "ui", "u2",
                                                               "l", "li", "l2",
                                                               "f", "fi", "f2",
                                                               "r", "ri", "r2",
@@ -50,14 +42,17 @@ private:
   // EFFECTS: Rotates the nested vector representing the side of the cube by 180 degrees.
   void rotate_half_turn(std::vector<std::vector<std::string>> &face);
 
+  // EFFECTS: Returns true if value is in str (case sensitive)
+  static bool STR_IN_VECTOR(const std::vector<std::string> &str, std::string value);
+
   // EFFECTS: Returns str with all characters converted to lowercase
   static std::string STRING_LOWER(std::string str);
 
   // EFFECTS: Returns true if input is a valid move
-  static bool IS_VALID_MOVE(std::string &input);
+  static bool IS_VALID_MOVE(std::string input);
 
   // EFFECTS: Returns true if input is a valid amount of layers for an NxNCube with n layers
-  static bool IS_VALID_DEPTH(std::string &input, int n);
+  static bool IS_VALID_DEPTH(std::string input, int n);
 
   // REQUIRES: move is in {"u", "ui", "u2", "l", "li", "l2", "f", "fi", "f2", "r", "ri", "r2", "b", "bi", "b2", "d", "di", "d2"}, 
   // MODIFIES: All relevant faces
@@ -82,6 +77,30 @@ public:
   
   // Main game loop
   void play();
+};
+
+class InvalidMoveException : public std::exception {
+private:
+  std::string message_;
+
+public:
+  InvalidMoveException(const std::string &message_in) : message_(message_in) {}
+
+  const char* what() const noexcept override {
+    return this->message_.c_str();
+  }
+};
+
+class InvalidDepthException : public std::exception {
+private:
+  std::string message_;
+
+public:
+  InvalidDepthException(const std::string &message_in) : message_(message_in) {}
+
+  const char* what() const noexcept override {
+    return this->message_.c_str();
+  }
 };
 
 #endif

@@ -10,6 +10,7 @@ int main(int argc, char *argv[]) {
 
   if (!(argc == 2)) {
     std::cout << ARG_ERROR << std::endl;
+    return 1;
   }
 
   if (!NxNCube::IS_POSITIVE_INT(argv[1])) {
