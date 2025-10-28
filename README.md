@@ -11,3 +11,10 @@ Instructions:
   5. To run the executable, run this command in the project directory:
       1. `build/nxncube.exe LAYERS`
       2. `LAYERS` represents the number of layers to generate the Rubik's Cube with
+
+TODO:
+  * Finish basic moves
+  * Add rotations to rotate entire cube more efficiently than rotating all layers at once
+  * Scramble function and argument
+  * Solve check with timer (?)
+  * Parse multiple moves in a single input (?)
