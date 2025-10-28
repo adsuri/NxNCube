@@ -12,7 +12,7 @@ int main(int argc, char *argv[]) {
     std::cout << ARG_ERROR << std::endl;
   }
 
-  if (!NxNCube::is_positive_int(argv[1])) {
+  if (!NxNCube::IS_POSITIVE_INT(argv[1])) {
     std::cout << ARG_ERROR << std::endl;
     return 1;
   }
