@@ -29,17 +29,17 @@ private:
 
   // REQUIRES: face is this->top, left, front, right, back, or bottom
   // MODIFIES: Appropriate side of cube
-  // EFFECTS: Rotates the nested vector representing the side of the cube by 90 degrees clockwise.
+  // EFFECTS: Rotates the nested vector representing the side of the cube by 90 degrees clockwise
   void rotate_cw(std::vector<std::vector<std::string>> &face);
 
   // REQUIRES: face is this->top, left, front, right, back, or bottom
   // MODIFIES: Appropriate side of cube
-  // EFFECTS: Rotates the nested vector representing the side of the cube by 90 degrees counterclockwise.
+  // EFFECTS: Rotates the nested vector representing the side of the cube by 90 degrees counterclockwise
   void rotate_ccw(std::vector<std::vector<std::string>> &face);
 
   // REQUIRES: face is this->top, left, front, right, back, or bottom
   // MODIFIES: Appropriate side of cube
-  // EFFECTS: Rotates the nested vector representing the side of the cube by 180 degrees.
+  // EFFECTS: Rotates the nested vector representing the side of the cube by 180 degrees
   void rotate_half_turn(std::vector<std::vector<std::string>> &face);
 
   // EFFECTS: Returns true if value is in str (case sensitive)
@@ -56,17 +56,17 @@ private:
 
   // REQUIRES: move is in {"u", "ui", "u2", "l", "li", "l2", "f", "fi", "f2", "r", "ri", "r2", "b", "bi", "b2", "d", "di", "d2"}, 
   // MODIFIES: All relevant faces
-  // EFFECTS: Simulates a rotation of a face and twists depth layers.
+  // EFFECTS: Simulates a rotation of a face and twists depth layers
   void move(std::string move, int depth);
 public:
   // EFFECTS: Returns true if str is a positive integer
   static bool IS_POSITIVE_INT(std::string str);
 
   // REQUIRES: layers > 0
-  // EFFECTS: Initializes an NxNCube object with 6 layers x layers nested vectors representing each side of a cube.
+  // EFFECTS: Initializes an NxNCube object with 6 layers x layers nested vectors representing each side of a cube
   NxNCube(int layers);
 
-  // EFFECTS: Prints a 2D net representing the cube onto the terminal.
+  // EFFECTS: Prints a 2D net representing the cube onto the terminal
   void draw() const;
 
   // EFFECTS: Clears the console
