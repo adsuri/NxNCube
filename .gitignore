@@ -5,7 +5,7 @@
 # A .gitignore file will tell git which files and directories to ignore and
 # not add to version control.
 
-.cache
+.cache/
 
 # Executables and debug files
 main

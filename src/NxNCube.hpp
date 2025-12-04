@@ -43,16 +43,16 @@ private:
   void rotate_half_turn(std::vector<std::vector<std::string>> &face);
 
   // EFFECTS: Returns true if value is in str (case sensitive)
-  static bool STR_IN_VECTOR(const std::vector<std::string> &str, std::string value);
+  static bool str_in_vector(const std::vector<std::string> &str, std::string value);
 
   // EFFECTS: Returns str with all characters converted to lowercase
-  static std::string STRING_LOWER(std::string str);
+  static std::string string_lower(std::string str);
 
   // EFFECTS: Returns true if input is a valid move
-  static bool IS_VALID_MOVE(std::string input);
+  static bool is_valid_move(std::string input);
 
   // EFFECTS: Returns true if input is a valid amount of layers for an NxNCube with n layers
-  static bool IS_VALID_DEPTH(std::string input, int n);
+  static bool is_valid_depth(std::string input, int n);
 
   // REQUIRES: move is in {"u", "ui", "u2", "l", "li", "l2", "f", "fi", "f2", "r", "ri", "r2", "b", "bi", "b2", "d", "di", "d2"}, 
   // MODIFIES: All relevant faces
@@ -60,7 +60,7 @@ private:
   void move(std::string move, int depth);
 public:
   // EFFECTS: Returns true if str is a positive integer
-  static bool IS_POSITIVE_INT(std::string str);
+  static bool is_positive_int(const std::string &str);
 
   // REQUIRES: layers > 0
   // EFFECTS: Initializes an NxNCube object with 6 layers x layers nested vectors representing each side of a cube
