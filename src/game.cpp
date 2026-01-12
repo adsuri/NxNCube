@@ -1,9 +1,9 @@
-#include "NxNCube.hpp"
 #include <iostream>
-#include <vector>
 #include <string>
 #include <cctype>
-#include <algorithm>
+
+#include "NxNCube.hpp"
+#include "util/util.hpp"
 
 int main(int argc, char *argv[]) {
   const std::string ARG_ERROR = "USAGE: ./game.exe LAYERS";
@@ -13,7 +13,7 @@ int main(int argc, char *argv[]) {
     return 1;
   }
 
-  if (!NxNCube::is_positive_int(argv[1])) {
+  if (!util::is_positive_int(argv[1])) {
     std::cout << ARG_ERROR << std::endl;
     return 1;
   }

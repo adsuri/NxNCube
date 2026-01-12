@@ -1,18 +1,20 @@
-#include "NxNCube.hpp"
 #include <iostream>
+#include <stdexcept>
 #include <string>
 #include <vector>
 #include <cassert>
-#include <algorithm>
+
+#include "NxNCube.hpp"
+#include "util/util.hpp"
 
 NxNCube::NxNCube(int layers)
  : n(layers),
-   top(layers, std::vector<std::string>(layers, NxNCube::WHITE)),
-   left(layers, std::vector<std::string>(layers, NxNCube::ORANGE)),
-   front(layers, std::vector<std::string>(layers, NxNCube::GREEN)),
-   right(layers, std::vector<std::string>(layers, NxNCube::RED)),
-   back(layers, std::vector<std::string>(layers, NxNCube::BLUE)),
-   bottom(layers, std::vector<std::string>(layers, NxNCube::YELLOW)) {}
+   m_top(layers, std::vector<std::string>(layers, NxNCube::WHITE)),
+   m_left(layers, std::vector<std::string>(layers, NxNCube::ORANGE)),
+   m_front(layers, std::vector<std::string>(layers, NxNCube::GREEN)),
+   m_right(layers, std::vector<std::string>(layers, NxNCube::RED)),
+   m_back(layers, std::vector<std::string>(layers, NxNCube::BLUE)),
+   m_bottom(layers, std::vector<std::string>(layers, NxNCube::YELLOW)) {}
 
 void NxNCube::rotate_cw(std::vector<std::vector<std::string>> &face) {
   std::vector<std::vector<std::string>> temp(this->n, std::vector<std::string>(this->n, ""));
@@ -47,39 +49,15 @@ void NxNCube::rotate_half_turn(std::vector<std::vector<std::string>> &face) {
   face = temp;
 };
 
-bool NxNCube::str_in_vector(const std::vector<std::string> &str, std::string value) {
-  for (size_t i = 0; i < str.size(); ++i) {
-    if (str[i] == value) {
-      return true;
-    }
-  }
-  return false;
-} // static
-
-bool NxNCube::is_positive_int(const std::string &str) {
-  for (size_t i = 0; i < str.size(); ++i) {
-    if (!std::isdigit(str[i])) {
-      return false;
-    }
-  }
-  return true;
-} // static
-
-std::string NxNCube::string_lower(std::string str) {
-  std::transform(str.begin(), str.end(), str.begin(),
-    [](unsigned char c){return std::tolower(c);});
-  return str;
-} // static
-
 bool NxNCube::is_valid_move(std::string input) {
-  input = NxNCube::string_lower(input);
+  input = util::string_lower(input);
 
-  return NxNCube::str_in_vector(NxNCube::VALID_MOVES, input);
+  return util::str_in_vector(NxNCube::VALID_MOVES, input);
 } // static
 
 bool NxNCube::is_valid_depth(std::string input, int n) {
-  input = NxNCube::string_lower(input);
-  if (!NxNCube::is_positive_int(input)) {
+  input = util::string_lower(input);
+  if (!util::is_positive_int(input)) {
     return false;
   }
 
@@ -100,7 +78,7 @@ void NxNCube::draw() const {
   for (int i = 0; i < this->n; ++i) {
     std::cout << filler;
     for (int j = 0; j < this->n; ++j) {
-      std::cout << this->top[i][j] << " ";
+      std::cout << m_top[i][j] << " ";
     }
     std::cout << std::endl;
   }
@@ -108,16 +86,16 @@ void NxNCube::draw() const {
   // main "belt" of faces
   for (int i = 0; i < this->n; ++i) {
     for (int j = 0; j < this->n; ++j) {
-      std::cout << this->left[i][j] << " ";
+      std::cout << m_left[i][j] << " ";
     }
     for (int j = 0; j < this->n; ++j) {
-      std::cout << this->front[i][j] << " ";
+      std::cout << m_front[i][j] << " ";
     }
     for (int j = 0; j < this->n; ++j) {
-      std::cout << this->right[i][j] << " ";
+      std::cout << m_right[i][j] << " ";
     }
     for (int j = 0; j < this->n; ++j) {
-      std::cout << this->back[i][j] << " ";
+      std::cout << m_back[i][j] << " ";
     }
     std::cout << std::endl;
   }
@@ -126,139 +104,137 @@ void NxNCube::draw() const {
   for (int i = 0; i < this->n; ++i) {
     std::cout << filler;
     for (int j = 0; j < this->n; ++j) {
-      std::cout << this->bottom[i][j] << " ";
+      std::cout << m_bottom[i][j] << " ";
     }
     std::cout << std::endl;
   }
   std::cout << NxNCube::CLEAR_COLOR;
 }
 
-void NxNCube::CLEAR_CONSOLE() {
+void NxNCube::clear_console() {
   std::cout << "\033[H\033[2J0" << std::endl;
 } // static
 
 void NxNCube::clear_draw() const {
-  NxNCube::CLEAR_CONSOLE();
+  NxNCube::clear_console();
   this->draw();
 }
 
 void NxNCube::move(std::string move, int depth) {
-  move = NxNCube::string_lower(move);
-
   if (!NxNCube::is_valid_move(move)) {
-    throw InvalidMoveException("Invalid move entered");
+    throw std::runtime_error("Invalid move entered");
   }
   if (depth > this-> n) {
-    throw InvalidDepthException("Invalid depth entered");
+    throw std::runtime_error("Invalid depth entered");
   }
 
   if (move == "u") {
-    this->rotate_cw(this->top);
+    this->rotate_cw(m_top);
 
     for (int layer = 0; layer < depth; ++layer) {
-      std::vector<std::string> temp_left = this->left[layer];
-      this->left[layer] = this->front[layer];
-      this->front[layer] = this->right[layer];
-      this->right[layer] = this->back[layer];
-      this->back[layer] = temp_left;
+      std::vector<std::string> temp_left = m_left[layer];
+      m_left[layer] = m_front[layer];
+      m_front[layer] = m_right[layer];
+      m_right[layer] = m_back[layer];
+      m_back[layer] = temp_left;
     }
 
     if (depth == this->n) {
-      this->rotate_ccw(this->bottom);
+      this->rotate_ccw(m_bottom);
     }
   } else if (move == "ui") {
-    this->rotate_ccw(this->top);
+    this->rotate_ccw(m_top);
 
     for (int layer = 0; layer < depth; ++layer) {
-      std::vector<std::string> temp_back = this->back[layer];
+      std::vector<std::string> temp_back = m_back[layer];
 
-      this->back[layer] = this->right[layer];
-      this->right[layer] = this->front[layer];
-      this->front[layer] = this->left[layer];
-      this->left[layer] = temp_back;
+      m_back[layer] = m_right[layer];
+      m_right[layer] = m_front[layer];
+      m_front[layer] = m_left[layer];
+      m_left[layer] = temp_back;
     }
 
     if (depth == this->n) {
-      this->rotate_cw(this->bottom);
+      this->rotate_cw(m_bottom);
     }
   } else if (move == "u2") {
-    this->rotate_half_turn(this->top);
+    this->rotate_half_turn(m_top);
 
     for (int layer = 0; layer < depth; ++layer) {
-      std::vector<std::string> temp_left = this->left[layer];
-      std::vector<std::string> temp_back = this->back[layer];
+      std::vector<std::string> temp_left = m_left[layer];
+      std::vector<std::string> temp_back = m_back[layer];
 
-      this->left[layer] = this->right[layer];
-      this->right[layer] = temp_left;
-      this->back[layer] = this->front[layer];
-      this->front[layer] = temp_back;
+      m_left[layer] = m_right[layer];
+      m_right[layer] = temp_left;
+      m_back[layer] = m_front[layer];
+      m_front[layer] = temp_back;
     }
 
     if (depth == this->n) {
-      this->rotate_half_turn(this->bottom);
+      this->rotate_half_turn(m_bottom);
     }
   } else if (move == "d") {
-    this->rotate_cw(this->bottom);
+    this->rotate_cw(m_bottom);
 
     for (int layer = this->n - 1; layer >= this->n - depth; --layer) {
-      std::vector<std::string> temp = this->back[layer];
+      std::vector<std::string> temp = m_back[layer];
 
-      this->back[layer] = this->right[layer];
-      this->right[layer] = this->front[layer];
-      this->front[layer] = this->left [layer];
-      this->left[layer] = temp;
+      m_back[layer] = m_right[layer];
+      m_right[layer] = m_front[layer];
+      m_front[layer] = m_left [layer];
+      m_left[layer] = temp;
     }
 
     if (depth == this->n) {
-      this->rotate_ccw(this->top);
+      this->rotate_ccw(m_top);
     }
   } else if (move == "di") {
-    this->rotate_ccw(this->bottom);
+    this->rotate_ccw(m_bottom);
 
     for (int layer = this->n - 1; layer >= this->n - depth; --layer) {
-      std::vector<std::string> temp = this->left[layer];
+      std::vector<std::string> temp = m_left[layer];
 
-      this->left[layer] = this->front[layer];
-      this->front[layer] = this->right[layer];
-      this->right[layer] = this->back[layer];
-      this->back[layer] = temp;
+      m_left[layer] = m_front[layer];
+      m_front[layer] = m_right[layer];
+      m_right[layer] = m_back[layer];
+      m_back[layer] = temp;
     }
 
     if (depth == this->n) {
-      this->rotate_cw(this->top);
+      this->rotate_cw(m_top);
     }
   } else if (move == "d2") {
-    this->rotate_half_turn(this->top);
+    this->rotate_half_turn(m_top);
 
     for (int layer = this->n - 1; layer >= this->n - depth; -- layer) {
-      std::vector<std::string> temp_left = this->left[layer];
-      std::vector<std::string> temp_back = this->back[layer];
+      std::vector<std::string> temp_left = m_left[layer];
+      std::vector<std::string> temp_back = m_back[layer];
 
-      this->left[layer] = this->right[layer];
-      this->right[layer] = temp_left;
-      this->back[layer] = this->front[layer];
-      this->front[layer] = temp_back;
+      m_left[layer] = m_right[layer];
+      m_right[layer] = temp_left;
+      m_back[layer] = m_front[layer];
+      m_front[layer] = temp_back;
     }
 
     if (depth == this->n) {
-      this->rotate_half_turn(this->top);
+      this->rotate_half_turn(m_top);
     }
   } else if (move == "r") {
-    this->rotate_cw(this->right);
+    this->rotate_cw(m_right);
 
     for (int layer = this->n - 1; layer >= this->n - depth; --layer) {
       for (int r = 0; r < this->n; ++r) {
-        std::string temp = this->top[r][layer];
+        std::string temp = m_top[r][layer];
 
-        this->top[r][layer] = this->front[r][layer];
-        this->front[r][layer] = this->bottom[r][layer];
-        this->bottom[r][layer] = this->back[this->n - 1 - r][this->n - 1 - layer];
-        this->back[this->n - 1 - r][this->n - 1 - layer] = temp;
+        m_top[r][layer] = m_front[r][layer];
+        m_front[r][layer] = m_bottom[r][layer];
+        m_bottom[r][layer] = m_back[this->n - 1 - r][this->n - 1 - layer];
+        m_back[this->n - 1 - r][this->n - 1 - layer] = temp;
       }
     }
 
     if (depth == this->n) {
-      this->rotate_ccw(this->left);
+      this->rotate_ccw(m_left);
     }
   } else if (move == "ri") {
 
@@ -281,29 +257,29 @@ void NxNCube::play() {
 
     std::cout << "What move?: ";
     std::cin >> input;
-    input = NxNCube::string_lower(input);
+    input = util::string_lower(input);
 
-    if (input == "done") {return;}
+    if (input == "done") { return; }
 
     while (!NxNCube::is_valid_move(input)) {
       std::cout << "Invalid move, try again: ";
       std::cin >> input;
-      input = NxNCube::string_lower(input);
-      if (input == "done") {return;}
+      input = util::string_lower(input);
+      if (input == "done") { return; }
     }
     std::string side = input;
 
     std::cout << "How many layers?: " ;
     std::cin >> input;
 
-    if(input == "done") {return;}
+    if(input == "done") { return; }
 
     while (!NxNCube::is_valid_depth(input, this->n)) {
       std::cout << "Invalid number of layers, try again: ";
       std::cin >> input;
-      input = NxNCube::string_lower(input);
+      input = util::string_lower(input);
 
-      if(input == "done") {return;}
+      if(input == "done") { return; }
     }
 
     int layers = std::stoi(input);

@@ -1,18 +1,19 @@
 #ifndef NxNCube_HPP
 #define NxNCube_HPP
+
 #include <string>
 #include <vector>
-#include <exception>
 
 class NxNCube {
-private:
+ private:
   int n;
-  std::vector<std::vector<std::string>> top;
-  std::vector<std::vector<std::string>> left;
-  std::vector<std::vector<std::string>> front;
-  std::vector<std::vector<std::string>> right;
-  std::vector<std::vector<std::string>> back;
-  std::vector<std::vector<std::string>> bottom;
+  std::vector<std::vector<std::string>> m_top;
+  std::vector<std::vector<std::string>> m_left;
+  std::vector<std::vector<std::string>> m_front;
+  std::vector<std::vector<std::string>> m_right;
+  std::vector<std::vector<std::string>> m_back;
+  std::vector<std::vector<std::string>> m_bottom;
+
   inline static const std::string WHITE = "\033[1;38;2;255;255;255;49mW";
   inline static const std::string ORANGE = "\033[1;38;2;255;165;0;49mO";
   inline static const std::string GREEN = "\033[1;38;2;0;255;0;49mG";
@@ -42,12 +43,6 @@ private:
   // EFFECTS: Rotates the nested vector representing the side of the cube by 180 degrees
   void rotate_half_turn(std::vector<std::vector<std::string>> &face);
 
-  // EFFECTS: Returns true if value is in str (case sensitive)
-  static bool str_in_vector(const std::vector<std::string> &str, std::string value);
-
-  // EFFECTS: Returns str with all characters converted to lowercase
-  static std::string string_lower(std::string str);
-
   // EFFECTS: Returns true if input is a valid move
   static bool is_valid_move(std::string input);
 
@@ -58,10 +53,8 @@ private:
   // MODIFIES: All relevant faces
   // EFFECTS: Simulates a rotation of a face and twists depth layers
   void move(std::string move, int depth);
-public:
-  // EFFECTS: Returns true if str is a positive integer
-  static bool is_positive_int(const std::string &str);
 
+ public:
   // REQUIRES: layers > 0
   // EFFECTS: Initializes an NxNCube object with 6 layers x layers nested vectors representing each side of a cube
   NxNCube(int layers);
@@ -70,37 +63,13 @@ public:
   void draw() const;
 
   // EFFECTS: Clears the console
-  static void CLEAR_CONSOLE();
+  static void clear_console();
 
   // EFFECTS: Clears the console and calls this->draw()
   void clear_draw() const;
   
   // Main game loop
   void play();
-};
-
-class InvalidMoveException : public std::exception {
-private:
-  std::string message_;
-
-public:
-  InvalidMoveException(const std::string &message_in) : message_(message_in) {}
-
-  const char* what() const noexcept override {
-    return this->message_.c_str();
-  }
-};
-
-class InvalidDepthException : public std::exception {
-private:
-  std::string message_;
-
-public:
-  InvalidDepthException(const std::string &message_in) : message_(message_in) {}
-
-  const char* what() const noexcept override {
-    return this->message_.c_str();
-  }
 };
 
 #endif
