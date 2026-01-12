@@ -49,14 +49,11 @@ void NxNCube::rotate_half_turn(std::vector<std::vector<std::string>> &face) {
   face = temp;
 };
 
-bool NxNCube::is_valid_move(std::string input) {
-  input = util::string_lower(input);
-
+bool NxNCube::is_valid_move(std::string input) const {
   return util::str_in_vector(NxNCube::VALID_MOVES, input);
-} // static
+}
 
-bool NxNCube::is_valid_depth(std::string input, int n) {
-  input = util::string_lower(input);
+bool NxNCube::is_valid_depth(std::string input, int n) const {
   if (!util::is_positive_int(input)) {
     return false;
   }
@@ -70,7 +67,7 @@ bool NxNCube::is_valid_depth(std::string input, int n) {
   }
 
   return true;
-} // static
+}
 
 void NxNCube::draw() const {
   // top face
@@ -111,17 +108,17 @@ void NxNCube::draw() const {
   std::cout << NxNCube::CLEAR_COLOR;
 }
 
-void NxNCube::clear_console() {
+void NxNCube::clear_console() const {
   std::cout << "\033[H\033[2J0" << std::endl;
-} // static
+}
 
 void NxNCube::clear_draw() const {
-  NxNCube::clear_console();
+  this->clear_console();
   this->draw();
 }
 
 void NxNCube::move(std::string move, int depth) {
-  if (!NxNCube::is_valid_move(move)) {
+  if (!this->is_valid_move(move)) {
     throw std::runtime_error("Invalid move entered");
   }
   if (depth > this-> n) {
@@ -261,7 +258,7 @@ void NxNCube::play() {
 
     if (input == "done") { return; }
 
-    while (!NxNCube::is_valid_move(input)) {
+    while (!this->is_valid_move(input)) {
       std::cout << "Invalid move, try again: ";
       std::cin >> input;
       input = util::string_lower(input);
@@ -271,18 +268,19 @@ void NxNCube::play() {
 
     std::cout << "How many layers?: " ;
     std::cin >> input;
+    input = util::string_lower(input);
 
     if(input == "done") { return; }
 
-    while (!NxNCube::is_valid_depth(input, this->n)) {
+    while (!this->is_valid_depth(input, this->n)) {
       std::cout << "Invalid number of layers, try again: ";
       std::cin >> input;
       input = util::string_lower(input);
 
       if(input == "done") { return; }
     }
-
     int layers = std::stoi(input);
+
     this->move(side, layers);
   }
 }

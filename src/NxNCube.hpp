@@ -44,10 +44,10 @@ class NxNCube {
   void rotate_half_turn(std::vector<std::vector<std::string>> &face);
 
   // EFFECTS: Returns true if input is a valid move
-  static bool is_valid_move(std::string input);
+  bool is_valid_move(std::string input) const;
 
   // EFFECTS: Returns true if input is a valid amount of layers for an NxNCube with n layers
-  static bool is_valid_depth(std::string input, int n);
+  bool is_valid_depth(std::string input, int n) const;
 
   // REQUIRES: move is in {"u", "ui", "u2", "l", "li", "l2", "f", "fi", "f2", "r", "ri", "r2", "b", "bi", "b2", "d", "di", "d2"}, 
   // MODIFIES: All relevant faces
@@ -63,7 +63,7 @@ class NxNCube {
   void draw() const;
 
   // EFFECTS: Clears the console
-  static void clear_console();
+  void clear_console() const;
 
   // EFFECTS: Clears the console and calls this->draw()
   void clear_draw() const;

@@ -5,13 +5,11 @@
 #include <vector>
 
 namespace util {
+  bool is_positive_int(const std::string &str);
 
-bool is_positive_int(const std::string &str);
+  bool str_in_vector(const std::vector<std::string> &str, const std::string &value);
 
-bool str_in_vector(const std::vector<std::string> &str, std::string value);
-
-std::string string_lower(std::string str);
-
+  std::string string_lower(std::string str);
 }
 
 #endif

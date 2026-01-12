@@ -1,6 +1,7 @@
 #include <vector>
 #include <string>
 #include <algorithm>
+#include <cctype>
 
 #include "util.hpp"
 
@@ -13,7 +14,7 @@ bool util::is_positive_int(const std::string &str) {
   return true;
 }
 
-bool util::str_in_vector(const std::vector<std::string> &str, std::string value) {
+bool util::str_in_vector(const std::vector<std::string> &str, const std::string &value) {
   for (size_t i = 0; i < str.size(); ++i) {
     if (str[i] == value) {
       return true;
