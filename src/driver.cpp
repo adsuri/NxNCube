@@ -23,7 +23,7 @@ int main(int argc, char *argv[]) {
     return 1;
   }
 
-  int n = std::stoi(argv[1]);
+  const int n = std::stoi(argv[1]);
   NxNCube cube(n);
 
   cube.play();

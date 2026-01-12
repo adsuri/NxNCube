@@ -25,7 +25,7 @@ void NxNCube::rotate_cw(std::vector<std::vector<std::string>> &face) {
     }
   }
   face = temp;
-};
+}
 
 void NxNCube::rotate_ccw(std::vector<std::vector<std::string>> &face) {
   std::vector<std::vector<std::string>> temp(this->n, std::vector<std::string>(this->n, ""));
@@ -36,7 +36,7 @@ void NxNCube::rotate_ccw(std::vector<std::vector<std::string>> &face) {
     }
   }
   face = temp;
-};
+}
 
 void NxNCube::rotate_half_turn(std::vector<std::vector<std::string>> &face) {
   std::vector<std::vector<std::string>> temp(this->n, std::vector<std::string>(this->n, ""));
@@ -47,13 +47,13 @@ void NxNCube::rotate_half_turn(std::vector<std::vector<std::string>> &face) {
     }
   }
   face = temp;
-};
+}
 
-bool NxNCube::is_valid_move(std::string input) const {
+bool NxNCube::is_valid_move(const std::string &input) const {
   return util::str_in_vector(NxNCube::VALID_MOVES, input);
 }
 
-bool NxNCube::is_valid_depth(std::string input, int n) const {
+bool NxNCube::is_valid_depth(const std::string &input) const {
   if (!util::is_positive_int(input)) {
     return false;
   }
@@ -62,7 +62,7 @@ bool NxNCube::is_valid_depth(std::string input, int n) const {
     return false;
   }
 
-  if (std::stoi(input) > n) {
+  if (std::stoi(input) > this->n) {
     return false;
   }
 
@@ -117,7 +117,7 @@ void NxNCube::clear_draw() const {
   this->draw();
 }
 
-void NxNCube::move(std::string move, int depth) {
+void NxNCube::move(const std::string &move, int depth) {
   if (!this->is_valid_move(move)) {
     throw std::runtime_error("Invalid move entered");
   }
@@ -272,7 +272,7 @@ void NxNCube::play() {
 
     if(input == "done") { return; }
 
-    while (!this->is_valid_depth(input, this->n)) {
+    while (!this->is_valid_depth(input)) {
       std::cout << "Invalid number of layers, try again: ";
       std::cin >> input;
       input = util::string_lower(input);

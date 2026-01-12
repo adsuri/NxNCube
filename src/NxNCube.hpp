@@ -44,19 +44,19 @@ class NxNCube {
   void rotate_half_turn(std::vector<std::vector<std::string>> &face);
 
   // EFFECTS: Returns true if input is a valid move
-  bool is_valid_move(std::string input) const;
+  bool is_valid_move(const std::string &input) const;
 
-  // EFFECTS: Returns true if input is a valid amount of layers for an NxNCube with n layers
-  bool is_valid_depth(std::string input, int n) const;
+  // EFFECTS: Returns true if input is a valid number of layers
+  bool is_valid_depth(const std::string &input) const;
 
   // REQUIRES: move is in {"u", "ui", "u2", "l", "li", "l2", "f", "fi", "f2", "r", "ri", "r2", "b", "bi", "b2", "d", "di", "d2"}, 
   // MODIFIES: All relevant faces
   // EFFECTS: Simulates a rotation of a face and twists depth layers
-  void move(std::string move, int depth);
+  void move(const std::string &move, int depth);
 
  public:
   // REQUIRES: layers > 0
-  // EFFECTS: Initializes an NxNCube object with 6 layers x layers nested vectors representing each side of a cube
+  // EFFECTS: Initializes an NxNCube object with six layers x layers nested vectors representing each side of a cube
   NxNCube(int layers);
 
   // EFFECTS: Prints a 2D net representing the cube onto the terminal
