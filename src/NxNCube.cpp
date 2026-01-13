@@ -119,10 +119,10 @@ void NxNCube::clear_draw() const {
 
 void NxNCube::move(const std::string &move, int depth) {
   if (!this->is_valid_move(move)) {
-    throw std::runtime_error("Invalid move entered");
+    throw std::invalid_argument("Invalid move entered: " + move);
   }
   if (depth > this-> n) {
-    throw std::runtime_error("Invalid depth entered");
+    throw std::out_of_range("Invalid depth entered: depth must be <= this->n");
   }
 
   if (move == "u") {
@@ -234,9 +234,40 @@ void NxNCube::move(const std::string &move, int depth) {
       this->rotate_ccw(m_left);
     }
   } else if (move == "ri") {
+    this->rotate_ccw(m_right);
 
+    for (int layer = this->n - 1; layer >= this->n - depth; --layer) {
+      for (int r = 0; r < this->n; ++r) {
+        std::string temp = m_bottom[r][layer];
+
+        m_bottom[r][layer] = m_front[r][layer];
+        m_front[r][layer] = m_top[r][layer];
+        m_top[r][layer] = m_back[this->n - 1 - r][this->n - 1 - layer];
+        m_back[this->n - 1 -r][this->n - 1 - layer] = temp;
+      }
+    }
+
+    if (depth == this->n) {
+      this->rotate_cw(m_left);
+    }
   } else if (move == "r2") {
+    this->rotate_half_turn(m_right);
 
+    for (int layer = this->n - 1; layer >= this->n - depth; --layer) {
+      for (int r = 0; r < this->n; ++r) {
+        std::string temp_bottom = m_bottom[r][layer];
+        std::string temp_front = m_front[r][layer];
+
+        m_bottom[r][layer] = m_top[r][layer];
+        m_top[r][layer] = temp_bottom;
+        m_front[r][layer] = m_back[this->n - 1 - r][this->n - 1 - layer];
+        m_back[this->n - 1 - r][this->n - 1 - layer] = temp_front;
+      }
+    }
+
+    if (depth == this->n) {
+      this->rotate_half_turn(m_left);
+    }
   }
 
   else {

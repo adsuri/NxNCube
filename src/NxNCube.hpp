@@ -7,6 +7,7 @@
 class NxNCube {
  private:
   int n;
+
   std::vector<std::vector<std::string>> m_top;
   std::vector<std::vector<std::string>> m_left;
   std::vector<std::vector<std::string>> m_front;
@@ -49,7 +50,7 @@ class NxNCube {
   // EFFECTS: Returns true if input is a valid number of layers
   bool is_valid_depth(const std::string &input) const;
 
-  // REQUIRES: move is in {"u", "ui", "u2", "l", "li", "l2", "f", "fi", "f2", "r", "ri", "r2", "b", "bi", "b2", "d", "di", "d2"}, 
+  // REQUIRES: move is in {"u", "ui", "u2", "l", "li", "l2", "f", "fi", "f2", "r", "ri", "r2", "b", "bi", "b2", "d", "di", "d2"}
   // MODIFIES: All relevant faces
   // EFFECTS: Simulates a rotation of a face and twists depth layers
   void move(const std::string &move, int depth);
