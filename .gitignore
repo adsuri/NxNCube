@@ -13,6 +13,8 @@ main
 
 # Cache
 .cache/
+.cache/clangd/
+.cahce/cland/index/
 cache/
 
 # Visual debugger configurations
