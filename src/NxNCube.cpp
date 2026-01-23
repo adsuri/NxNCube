@@ -109,7 +109,7 @@ void NxNCube::draw() const {
 }
 
 void NxNCube::clear_console() const {
-  std::cout << "\033[H\033[2J0" << std::endl;
+  std::cout << "\033[H\033[2J";
 }
 
 void NxNCube::clear_draw() const {
