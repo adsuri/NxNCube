@@ -12,4 +12,4 @@ build/nxncube: src/driver.cpp src/NxNCube.cpp src/util.cpp
 .SUFFIXES:
 
 clean:
-	rm -rvf *.exe
+	rm -rvf *.exe build/nxncube

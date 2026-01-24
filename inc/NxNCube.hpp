@@ -28,12 +28,12 @@ class NxNCube {
                                                 "\033[0m"};
   friend std::ostream &operator<<(std::ostream &os, NxNCube::color val);
 
-  std::vector<std::vector<NxNCube::color>> m_top;
-  std::vector<std::vector<NxNCube::color>> m_left;
-  std::vector<std::vector<NxNCube::color>> m_front;
-  std::vector<std::vector<NxNCube::color>> m_right;
-  std::vector<std::vector<NxNCube::color>> m_back;
-  std::vector<std::vector<NxNCube::color>> m_bottom;
+  std::vector<NxNCube::color> m_top;
+  std::vector<NxNCube::color> m_left;
+  std::vector<NxNCube::color> m_front;
+  std::vector<NxNCube::color> m_right;
+  std::vector<NxNCube::color> m_back;
+  std::vector<NxNCube::color> m_bottom;
 
   inline static const std::vector<std::string> VALID_MOVES = {"u", "ui", "u2",
                                                               "l", "li", "l2",
@@ -43,6 +43,16 @@ class NxNCube {
                                                               "d", "di", "d2"};
 
   /**
+   * @brief Converts a 2D index `[r][c]` to a 1D index for a `this->n` x `this->n` long vector
+   * 
+   * @param r Row index (0 <= r < this->n)
+   * @param c Column index (0 <= c < this->n)
+   * @return Equivalent 1D index
+   * 
+   */
+  size_t idx(size_t r, size_t c) const noexcept;
+
+  /**
    * @brief Rotates the elements in the 2D `vector` representing the given `face` clockwise by a quarter-turn
    * 
    * This does not affect the faces bordering the target `face`. That logic is taken care of in `this->move()`.
@@ -50,7 +60,7 @@ class NxNCube {
    * @param face Reference to {`this->top`, `left`, `front`, `right`, `back`, or `bottom`}
    * 
    */
-  void rotate_cw(std::vector<std::vector<NxNCube::color>> &face);
+  void rotate_cw(std::vector<NxNCube::color> &face);
 
   /**
    * @brief Rotates the elements in the 2D `vector` representing the given `face` counter-clockwise by a quarter-turn
@@ -60,7 +70,7 @@ class NxNCube {
    * @param face Reference to {`this->top`, `left`, `front`, `right`, `back`, or `bottom`}
    * 
    */
-  void rotate_ccw(std::vector<std::vector<NxNCube::color>> &face);
+  void rotate_ccw(std::vector<NxNCube::color> &face);
 
   /**
    * @brief Rotates the elements in the 2D `vector` representing the given `face` by a half-turn
@@ -70,7 +80,7 @@ class NxNCube {
    * @param face Reference to {`this->top`, `left`, `front`, `right`, `back`, or `bottom`}
    * 
    */
-  void rotate_half_turn(std::vector<std::vector<NxNCube::color>> &face);
+  void rotate_half_turn(std::vector<NxNCube::color> &face);
 
   /**
    * @brief Checks if a `string` is a valid move for a turn

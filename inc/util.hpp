@@ -10,7 +10,7 @@ namespace util {
    * 
    * @param str `string` to check
    * @return `true` if `str` represents a positive integer, false otherwise
-
+   * 
    */
   bool is_positive_int(const std::string &str);
 

@@ -9,41 +9,45 @@
 
 NxNCube::NxNCube(int layers)
  : n(layers),
-   m_top(layers, std::vector<NxNCube::color>(layers, NxNCube::color::WHITE)),
-   m_left(layers, std::vector<NxNCube::color>(layers, NxNCube::color::ORANGE)),
-   m_front(layers, std::vector<NxNCube::color>(layers, NxNCube::color::GREEN)),
-   m_right(layers, std::vector<NxNCube::color>(layers, NxNCube::color::RED)),
-   m_back(layers, std::vector<NxNCube::color>(layers, NxNCube::color::BLUE)),
-   m_bottom(layers, std::vector<NxNCube::color>(layers, NxNCube::color::YELLOW)) {}
+   m_top(n * n, NxNCube::color::WHITE),
+   m_left(n * n, NxNCube::color::ORANGE),
+   m_front(n * n, NxNCube::color::GREEN),
+   m_right(n * n, NxNCube::color::RED),
+   m_back(n * n, NxNCube::color::BLUE),
+   m_bottom(n * n, NxNCube::color::YELLOW) {}
 
-void NxNCube::rotate_cw(std::vector<std::vector<NxNCube::color>> &face) {
-  std::vector<std::vector<NxNCube::color>> temp(this->n, std::vector<NxNCube::color>(this->n, NxNCube::color::RESET));
+size_t NxNCube::idx(size_t r, size_t c) const noexcept {
+  return (r * this->n) + c;
+}
+
+void NxNCube::rotate_cw(std::vector<NxNCube::color> &face) {
+  std::vector<NxNCube::color> temp(this->n * this->n, NxNCube::color::RESET);
 
   for (size_t r = 0; r < this->n; ++r) {
     for (size_t c = 0; c < this->n; ++c) {
-      temp[c][this->n - 1 - r] = face[r][c];
+      temp[idx(c, this->n - 1 - r)] = face[idx(r, c)];
     }
   }
   face = temp;
 }
 
-void NxNCube::rotate_ccw(std::vector<std::vector<NxNCube::color>> &face) {
-  std::vector<std::vector<NxNCube::color>> temp(this->n, std::vector<NxNCube::color>(this->n, NxNCube::color::RESET));
+void NxNCube::rotate_ccw(std::vector<NxNCube::color> &face) {
+  std::vector<NxNCube::color> temp(this->n * this->n, NxNCube::color::RESET);
 
   for (size_t r = 0; r < this->n; ++r) {
     for (size_t c = 0; c < this->n; ++c) {
-      temp[this->n - 1 - c][r] = face[r][c];
+      temp[idx(this->n - 1 - c, r)] = face[idx(r, c)];
     }
   }
   face = temp;
 }
 
-void NxNCube::rotate_half_turn(std::vector<std::vector<NxNCube::color>> &face) {
-  std::vector<std::vector<NxNCube::color>> temp(this->n, std::vector<NxNCube::color>(this->n, NxNCube::color::RESET));
+void NxNCube::rotate_half_turn(std::vector<NxNCube::color> &face) {
+  std::vector<NxNCube::color> temp(this->n * this->n, NxNCube::color::RESET);
 
   for (size_t r = 0; r < this->n; ++r) {
     for (size_t c = 0; c < this->n; ++c) {
-      temp[this->n - 1 - r][this->n - 1 - c] = face[r][c];
+      temp[idx(this->n - 1 - r, this->n - 1- c)] = face[idx(r, c)];
     }
   }
   face = temp;
@@ -71,37 +75,37 @@ bool NxNCube::is_valid_depth(const std::string &input) const {
 
 void NxNCube::draw() const {
   // top face
-  std::string filler((2*this->n), ' ');
-  for (int i = 0; i < this->n; ++i) {
+  const std::string filler(2 * this->n, ' ');
+  for (size_t i = 0; i < this->n; ++i) {
     std::cout << filler;
-    for (int j = 0; j < this->n; ++j) {
-      std::cout << m_top[i][j] << " ";
+    for (size_t j = 0; j < this->n; ++j) {
+      std::cout << m_top[idx(i, j)] << " ";
     }
     std::cout << std::endl;
   }
 
   // main "belt" of faces
-  for (int i = 0; i < this->n; ++i) {
-    for (int j = 0; j < this->n; ++j) {
-      std::cout << m_left[i][j] << " ";
+  for (size_t i = 0; i < this->n; ++i) {
+    for (size_t j = 0; j < this->n; ++j) {
+      std::cout << m_left[idx(i, j)] << " ";
     }
-    for (int j = 0; j < this->n; ++j) {
-      std::cout << m_front[i][j] << " ";
+    for (size_t j = 0; j < this->n; ++j) {
+      std::cout << m_front[idx(i, j)] << " ";
     }
-    for (int j = 0; j < this->n; ++j) {
-      std::cout << m_right[i][j] << " ";
+    for (size_t j = 0; j < this->n; ++j) {
+      std::cout << m_right[idx(i, j)] << " ";
     }
-    for (int j = 0; j < this->n; ++j) {
-      std::cout << m_back[i][j] << " ";
+    for (size_t j = 0; j < this->n; ++j) {
+      std::cout << m_back[idx(i, j)] << " ";
     }
     std::cout << std::endl;
   }
   
   // bottom face
-  for (int i = 0; i < this->n; ++i) {
+  for (size_t i = 0; i < this->n; ++i) {
     std::cout << filler;
-    for (int j = 0; j < this->n; ++j) {
-      std::cout << m_bottom[i][j] << " ";
+    for (size_t j = 0; j < this->n; ++j) {
+      std::cout << m_bottom[idx(i, j)] << " ";
     }
     std::cout << std::endl;
   }
@@ -121,19 +125,23 @@ void NxNCube::move(const std::string &move, int depth) {
   if (!this->is_valid_move(move)) {
     throw std::invalid_argument("Invalid move entered: " + move);
   }
-  if (depth > this-> n) {
+  if (depth > this->n) {
     throw std::out_of_range("Invalid depth entered: depth must be <= this->n");
   }
 
   if (move == "u") {
     this->rotate_cw(m_top);
 
-    for (int layer = 0; layer < depth; ++layer) {
-      std::vector<NxNCube::color> temp_left = m_left[layer];
-      m_left[layer] = m_front[layer];
-      m_front[layer] = m_right[layer];
-      m_right[layer] = m_back[layer];
-      m_back[layer] = temp_left;
+    for (size_t layer = 0; layer < depth; ++layer) {
+      for (size_t c = 0; c < this->n; ++c) {
+        const int index = idx(layer, c);
+        NxNCube::color temp_left = m_left[index];
+
+        m_left[index] = m_front[index];
+        m_front[index] = m_right[index];
+        m_right[index] = m_back[index];
+        m_back[index] = temp_left;
+      }
     }
 
     if (depth == this->n) {
@@ -142,13 +150,16 @@ void NxNCube::move(const std::string &move, int depth) {
   } else if (move == "ui") {
     this->rotate_ccw(m_top);
 
-    for (int layer = 0; layer < depth; ++layer) {
-      std::vector<NxNCube::color> temp_back = m_back[layer];
+    for (size_t layer = 0; layer < depth; ++layer) {
+      for (size_t c = 0; c < this->n; ++c) {
+        const int index = idx(layer, c);
+        NxNCube::color temp_back = m_back[index];
 
-      m_back[layer] = m_right[layer];
-      m_right[layer] = m_front[layer];
-      m_front[layer] = m_left[layer];
-      m_left[layer] = temp_back;
+        m_back[index] = m_right[index];
+        m_right[index] = m_front[index];
+        m_front[index] = m_left[index];
+        m_left[index] = temp_back;
+      }
     }
 
     if (depth == this->n) {
@@ -157,14 +168,17 @@ void NxNCube::move(const std::string &move, int depth) {
   } else if (move == "u2") {
     this->rotate_half_turn(m_top);
 
-    for (int layer = 0; layer < depth; ++layer) {
-      std::vector<NxNCube::color> temp_left = m_left[layer];
-      std::vector<NxNCube::color> temp_back = m_back[layer];
+    for (size_t layer = 0; layer < depth; ++layer) {
+      for (size_t c = 0; c < this->n; ++c) {
+        const int index = idx(layer, c);
+        NxNCube::color temp_left = m_left[index];
+        NxNCube::color temp_back = m_back[index];
 
-      m_left[layer] = m_right[layer];
-      m_right[layer] = temp_left;
-      m_back[layer] = m_front[layer];
-      m_front[layer] = temp_back;
+        m_left[index] = m_right[index];
+        m_right[index] = temp_left;
+        m_back[index] = m_front[index];
+        m_front[index] = temp_back;
+      }
     }
 
     if (depth == this->n) {
@@ -173,13 +187,16 @@ void NxNCube::move(const std::string &move, int depth) {
   } else if (move == "d") {
     this->rotate_cw(m_bottom);
 
-    for (int layer = this->n - 1; layer >= this->n - depth; --layer) {
-      std::vector<NxNCube::color> temp = m_back[layer];
+    for (size_t layer = this->n - 1; layer >= this->n - depth; --layer) {
+      for (size_t c = 0; c < this->n; ++c) {
+        const int index = idx(layer, c);
+        NxNCube::color temp_back = m_back[index];
 
-      m_back[layer] = m_right[layer];
-      m_right[layer] = m_front[layer];
-      m_front[layer] = m_left [layer];
-      m_left[layer] = temp;
+        m_back[index] = m_right[index];
+        m_right[index] = m_front[index];
+        m_front[index] = m_left[index];
+        m_left[index] = temp_back;
+      }
     }
 
     if (depth == this->n) {
@@ -188,13 +205,16 @@ void NxNCube::move(const std::string &move, int depth) {
   } else if (move == "di") {
     this->rotate_ccw(m_bottom);
 
-    for (int layer = this->n - 1; layer >= this->n - depth; --layer) {
-      std::vector<NxNCube::color> temp = m_left[layer];
+    for (size_t layer = this->n - 1; layer >= this->n - depth; --layer) {
+      for (size_t c = 0; c < this->n; ++c) {
+        const int index = idx(layer, c);
+        NxNCube::color temp_left = m_left[index];
 
-      m_left[layer] = m_front[layer];
-      m_front[layer] = m_right[layer];
-      m_right[layer] = m_back[layer];
-      m_back[layer] = temp;
+        m_left[index] = m_front[index];
+        m_front[index] = m_right[index];
+        m_right[index] = m_back[index];
+        m_back[index] = temp_left;
+      }
     }
 
     if (depth == this->n) {
@@ -203,14 +223,18 @@ void NxNCube::move(const std::string &move, int depth) {
   } else if (move == "d2") {
     this->rotate_half_turn(m_top);
 
-    for (int layer = this->n - 1; layer >= this->n - depth; -- layer) {
-      std::vector<NxNCube::color> temp_left = m_left[layer];
-      std::vector<NxNCube::color> temp_back = m_back[layer];
+    for (size_t layer = this->n - 1; layer >= this->n - depth; --layer) {
 
-      m_left[layer] = m_right[layer];
-      m_right[layer] = temp_left;
-      m_back[layer] = m_front[layer];
-      m_front[layer] = temp_back;
+      for (size_t c = 0; c < this->n; ++c) {
+        const int index = idx(layer, c);
+        NxNCube::color temp_left = m_left[index];
+        NxNCube::color temp_back = m_back[index];
+
+        m_left[index] = m_right[index];
+        m_right[index] = temp_left;
+        m_back[index] = m_front[index];
+        m_front[index] = temp_back;
+      }
     }
 
     if (depth == this->n) {
@@ -219,14 +243,14 @@ void NxNCube::move(const std::string &move, int depth) {
   } else if (move == "r") {
     this->rotate_cw(m_right);
 
-    for (int layer = this->n - 1; layer >= this->n - depth; --layer) {
-      for (int r = 0; r < this->n; ++r) {
-        NxNCube::color temp = m_top[r][layer];
+    for (size_t layer = this->n - 1; layer >= this->n - depth; --layer) {
+      for (size_t r = 0; r < this->n; ++r) {
+        NxNCube::color temp_top = m_top[idx(r, layer)];
 
-        m_top[r][layer] = m_front[r][layer];
-        m_front[r][layer] = m_bottom[r][layer];
-        m_bottom[r][layer] = m_back[this->n - 1 - r][this->n - 1 - layer];
-        m_back[this->n - 1 - r][this->n - 1 - layer] = temp;
+        m_top[idx(r, layer)] = m_front[idx(r, layer)];
+        m_front[idx(r, layer)] = m_bottom[idx(r, layer)];
+        m_bottom[idx(r, layer)] = m_back[idx(this->n - 1 - r, this->n - 1 - layer)];
+        m_back[idx(this->n - 1 - r, this->n - 1 - layer)] = temp_top;
       }
     }
 
@@ -236,14 +260,14 @@ void NxNCube::move(const std::string &move, int depth) {
   } else if (move == "ri") {
     this->rotate_ccw(m_right);
 
-    for (int layer = this->n - 1; layer >= this->n - depth; --layer) {
-      for (int r = 0; r < this->n; ++r) {
-        NxNCube::color temp = m_bottom[r][layer];
+    for (size_t layer = this->n - 1; layer >= this->n - depth; --layer) {
+      for (size_t r = 0; r < this->n; ++r) {
+        NxNCube::color temp_bottom = m_bottom[idx(r, layer)];
 
-        m_bottom[r][layer] = m_front[r][layer];
-        m_front[r][layer] = m_top[r][layer];
-        m_top[r][layer] = m_back[this->n - 1 - r][this->n - 1 - layer];
-        m_back[this->n - 1 -r][this->n - 1 - layer] = temp;
+        m_bottom[idx(r, layer)] = m_front[idx(r, layer)];
+        m_front[idx(r, layer)] = m_top[idx(r, layer)];
+        m_top[idx(r, layer)] = m_back[idx(this->n - 1 - r, this->n - 1 - layer)];
+        m_back[idx(this->n - 1 -r, this->n - 1 - layer)] = temp_bottom;
       }
     }
 
@@ -253,15 +277,15 @@ void NxNCube::move(const std::string &move, int depth) {
   } else if (move == "r2") {
     this->rotate_half_turn(m_right);
 
-    for (int layer = this->n - 1; layer >= this->n - depth; --layer) {
-      for (int r = 0; r < this->n; ++r) {
-        NxNCube::color temp_bottom = m_bottom[r][layer];
-        NxNCube::color temp_front = m_front[r][layer];
+    for (size_t layer = this->n - 1; layer >= this->n - depth; --layer) {
+      for (size_t r = 0; r < this->n; ++r) {
+        NxNCube::color temp_bottom = m_bottom[idx(r, layer)];
+        NxNCube::color temp_front = m_front[idx(r, layer)];
 
-        m_bottom[r][layer] = m_top[r][layer];
-        m_top[r][layer] = temp_bottom;
-        m_front[r][layer] = m_back[this->n - 1 - r][this->n - 1 - layer];
-        m_back[this->n - 1 - r][this->n - 1 - layer] = temp_front;
+        m_bottom[idx(r, layer)] = m_top[idx(r, layer)];
+        m_top[idx(r, layer)] = temp_bottom;
+        m_front[idx(r, layer)] = m_back[idx(this->n - 1 - r, this->n - 1 - layer)];
+        m_back[idx(this->n - 1 - r, this->n - 1 - layer)] = temp_front;
       }
     }
 
