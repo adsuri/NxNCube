@@ -3,25 +3,38 @@
 
 #include <string>
 #include <vector>
+#include <iostream>
 
 class NxNCube {
  private:
   int n;
 
-  std::vector<std::vector<std::string>> m_top;
-  std::vector<std::vector<std::string>> m_left;
-  std::vector<std::vector<std::string>> m_front;
-  std::vector<std::vector<std::string>> m_right;
-  std::vector<std::vector<std::string>> m_back;
-  std::vector<std::vector<std::string>> m_bottom;
+  enum color {
+    WHITE,
+    ORANGE,
+    GREEN,
+    RED,
+    BLUE,
+    YELLOW,
+    RESET
+  };
 
-  inline static const std::string WHITE = "\033[1;38;2;255;255;255;49mW";
-  inline static const std::string ORANGE = "\033[1;38;2;255;165;0;49mO";
-  inline static const std::string GREEN = "\033[1;38;2;0;255;0;49mG";
-  inline static const std::string RED = "\033[1;38;2;255;0;0;49mR";
-  inline static const std::string BLUE = "\033[1;38;2;0;0;255;49mB";
-  inline static const std::string YELLOW = "\033[1;38;2;255;255;0;49mY";
-  inline static const std::string CLEAR_COLOR = "\033[0m";
+  inline static const std::string stickers[] = {"\033[1;38;2;255;255;255;49mW",
+                                                "\033[1;38;2;255;165;0;49mO",
+                                                "\033[1;38;2;0;255;0;49mG",
+                                                "\033[1;38;2;255;0;0;49mR",
+                                                "\033[1;38;2;0;0;255;49mB",
+                                                "\033[1;38;2;255;255;0;49mY",
+                                                "\033[0m"};
+  friend std::ostream &operator<<(std::ostream &os, NxNCube::color val);
+
+  std::vector<std::vector<NxNCube::color>> m_top;
+  std::vector<std::vector<NxNCube::color>> m_left;
+  std::vector<std::vector<NxNCube::color>> m_front;
+  std::vector<std::vector<NxNCube::color>> m_right;
+  std::vector<std::vector<NxNCube::color>> m_back;
+  std::vector<std::vector<NxNCube::color>> m_bottom;
+
   inline static const std::vector<std::string> VALID_MOVES = {"u", "ui", "u2",
                                                               "l", "li", "l2",
                                                               "f", "fi", "f2",
@@ -37,7 +50,7 @@ class NxNCube {
    * @param face Reference to {`this->top`, `left`, `front`, `right`, `back`, or `bottom`}
    * 
    */
-  void rotate_cw(std::vector<std::vector<std::string>> &face);
+  void rotate_cw(std::vector<std::vector<NxNCube::color>> &face);
 
   /**
    * @brief Rotates the elements in the 2D `vector` representing the given `face` counter-clockwise by a quarter-turn
@@ -47,7 +60,7 @@ class NxNCube {
    * @param face Reference to {`this->top`, `left`, `front`, `right`, `back`, or `bottom`}
    * 
    */
-  void rotate_ccw(std::vector<std::vector<std::string>> &face);
+  void rotate_ccw(std::vector<std::vector<NxNCube::color>> &face);
 
   /**
    * @brief Rotates the elements in the 2D `vector` representing the given `face` by a half-turn
@@ -57,7 +70,7 @@ class NxNCube {
    * @param face Reference to {`this->top`, `left`, `front`, `right`, `back`, or `bottom`}
    * 
    */
-  void rotate_half_turn(std::vector<std::vector<std::string>> &face);
+  void rotate_half_turn(std::vector<std::vector<NxNCube::color>> &face);
 
   /**
    * @brief Checks if a `string` is a valid move for a turn
@@ -119,5 +132,7 @@ class NxNCube {
    */
   void play();
 };
+
+std::ostream &operator<<(std::ostream &os, NxNCube::color val);
 
 #endif
