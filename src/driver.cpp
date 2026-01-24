@@ -2,7 +2,7 @@
 #include <string>
 
 #include "NxNCube.hpp"
-#include "util/util.hpp"
+#include "util.hpp"
 
 int main(int argc, char *argv[]) {
   const std::string arg_error = "USAGE: ./game.exe LAYERS";

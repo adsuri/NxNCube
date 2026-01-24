@@ -5,7 +5,7 @@
 #include <cassert>
 
 #include "NxNCube.hpp"
-#include "util/util.hpp"
+#include "util.hpp"
 
 NxNCube::NxNCube(int layers)
  : n(layers),
