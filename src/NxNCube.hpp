@@ -29,47 +29,94 @@ class NxNCube {
                                                               "b", "bi", "b2",
                                                               "d", "di", "d2"};
 
-  // REQUIRES: face is this->top, left, front, right, back, or bottom
-  // MODIFIES: Appropriate side of cube
-  // EFFECTS: Rotates the nested vector representing the side of the cube by 90 degrees clockwise
+  /**
+   * @brief Rotates the elements in the 2D `vector` representing the given `face` clockwise by a quarter-turn
+   * 
+   * This does not affect the faces bordering the target `face`. That logic is taken care of in `this->move()`.
+   * 
+   * @param face Reference to {`this->top`, `left`, `front`, `right`, `back`, or `bottom`}
+   * 
+   */
   void rotate_cw(std::vector<std::vector<std::string>> &face);
 
-  // REQUIRES: face is this->top, left, front, right, back, or bottom
-  // MODIFIES: Appropriate side of cube
-  // EFFECTS: Rotates the nested vector representing the side of the cube by 90 degrees counterclockwise
+  /**
+   * @brief Rotates the elements in the 2D `vector` representing the given `face` counter-clockwise by a quarter-turn
+   * 
+   * This does not affect the faces bordering the target `face`. That logic is taken care of in `this->move()`.
+   * 
+   * @param face Reference to {`this->top`, `left`, `front`, `right`, `back`, or `bottom`}
+   * 
+   */
   void rotate_ccw(std::vector<std::vector<std::string>> &face);
 
-  // REQUIRES: face is this->top, left, front, right, back, or bottom
-  // MODIFIES: Appropriate side of cube
-  // EFFECTS: Rotates the nested vector representing the side of the cube by 180 degrees
+  /**
+   * @brief Rotates the elements in the 2D `vector` representing the given `face` by a half-turn
+   * 
+   * This does not affect the faces bordering the target `face`, that logic is taken care of in `this->move()`.
+   * 
+   * @param face Reference to {`this->top`, `left`, `front`, `right`, `back`, or `bottom`}
+   * 
+   */
   void rotate_half_turn(std::vector<std::vector<std::string>> &face);
 
-  // EFFECTS: Returns true if input is a valid move
+  /**
+   * @brief Checks if a `string` is a valid move for a turn
+   * 
+   * @param input Type of move
+   * @return `true` if `input` represents a valid move, `false` otherwise
+   * 
+   */
   bool is_valid_move(const std::string &input) const;
 
-  // EFFECTS: Returns true if input is a valid number of layers
+  /**
+   * @brief Checks if a `string` is a valid number of layers for a turn
+   * 
+   * @param input Number of layers (in string form)
+   * 
+   * @return `true` if `input` represents a valid depth, `false` otherwise
+   * 
+   */
   bool is_valid_depth(const std::string &input) const;
 
-  // REQUIRES: move is in {"u", "ui", "u2", "l", "li", "l2", "f", "fi", "f2", "r", "ri", "r2", "b", "bi", "b2", "d", "di", "d2"}
-  // MODIFIES: All relevant faces
-  // EFFECTS: Simulates a rotation of a face and twists depth layers
+  /**
+   * @brief Does a move on the cube, modifying the appropriate faces
+   * 
+   * @param move The move to do, must be in {`"u"`, `"ui"`, `"u2"`, `"l"`, `"li"`, `"l2"`, `"f"`, `"fi"`, `"f2"`, `"r"`, `"ri"`, `"r2"`, `"b"`, `"bi"`, `"b2"`, `"d"`, `"di"`, `"d2"`}
+   * @param depth Number of layers to move at once (0 < depth <= n)
+   * 
+   */
   void move(const std::string &move, int depth);
 
  public:
-  // REQUIRES: layers > 0
-  // EFFECTS: Initializes an NxNCube object with six layers x layers nested vectors representing each side of a cube
+  /**
+   * @brief Construct a new NxNCube object
+   * 
+   * @param layers Number of layers in the cube (layers > 0)
+   */
   NxNCube(int layers);
 
-  // EFFECTS: Prints a 2D net representing the cube onto the terminal
+  /**
+   * @brief Displays a 2D net representing the state of the puzzle
+   * 
+   */
   void draw() const;
 
-  // EFFECTS: Clears the console
+  /**
+   * @brief Clears the console
+   * 
+   */
   void clear_console() const;
 
-  // EFFECTS: Clears the console and calls this->draw()
+  /**
+   * @brief Clears the console and calls this->draw()
+   * 
+   */
   void clear_draw() const;
   
-  // Main game loop
+  /**
+   * @brief Starts the main game loop
+   * 
+   */
   void play();
 };
 

@@ -14,13 +14,8 @@ bool util::is_positive_int(const std::string &str) {
   return true;
 }
 
-bool util::str_in_vector(const std::vector<std::string> &str, const std::string &value) {
-  for (size_t i = 0; i < str.size(); ++i) {
-    if (str[i] == value) {
-      return true;
-    }
-  }
-  return false;
+bool util::str_in_vector(const std::vector<std::string> &vec, const std::string &value) {
+  return std::find(vec.begin(), vec.end(), value) != vec.end();
 }
 
 std::string util::string_lower(std::string str) {

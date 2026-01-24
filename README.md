@@ -5,9 +5,9 @@ Instructions:
   1. Clone into this repository
   2. Install g++ if it is not installed already on your machine
   3. To build the executable, run this command in your terminal in the project directory:
-      1. `make build/nxncube.exe`
+      1. `make build/nxncube`
   4. To run the executable, run this command in the project directory:
-      1. `build/nxncube.exe LAYERS`
+      1. `build/nxncube LAYERS`
       2. `LAYERS` represents the number of layers to generate the Rubik's Cube with
 
 TODO:

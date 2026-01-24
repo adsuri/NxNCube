@@ -5,10 +5,32 @@
 #include <vector>
 
 namespace util {
+  /**
+   * @brief Checks if a `string` represents a positive integer
+   * 
+   * @param str `string` to check
+   * @return `true` if `str` represents a positive integer, false otherwise
+
+   */
   bool is_positive_int(const std::string &str);
 
-  bool str_in_vector(const std::vector<std::string> &str, const std::string &value);
+  /**
+   * @brief Checks if a `string` is in a `vector`
+   * 
+   * @param vec `vector` to look through
+   * @param value `string` to look for
+   * @return `true` if `value` is in `vec`, false otherwise
+   * 
+   */
+  bool str_in_vector(const std::vector<std::string> &vec, const std::string &value);
 
+  /**
+   * @brief Creates a lowercase `string` from another `string`
+   * 
+   * @param str `string` to use
+   * @return Copy of `str` in lowercase
+   * 
+   */
   std::string string_lower(std::string str);
 }
 
