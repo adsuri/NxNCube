@@ -50,7 +50,7 @@ class NxNCube {
    * @return Equivalent 1D index
    * 
    */
-  size_t idx(size_t r, size_t c) const noexcept;
+  int idx(int r, int c) const noexcept;
 
   /**
    * @brief Rotates the elements in the 2D `vector` representing the given `face` clockwise by a quarter-turn
