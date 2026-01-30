@@ -7,14 +7,16 @@
 #include "NxNCube.hpp"
 #include "util.hpp"
 
-NxNCube::NxNCube(int layers)
+NxNCube::NxNCube(int layers, bool blocks)
  : n(layers),
    m_top(n * n, NxNCube::color::WHITE),
    m_left(n * n, NxNCube::color::ORANGE),
    m_front(n * n, NxNCube::color::GREEN),
    m_right(n * n, NxNCube::color::RED),
    m_back(n * n, NxNCube::color::BLUE),
-   m_bottom(n * n, NxNCube::color::YELLOW) {}
+   m_bottom(n * n, NxNCube::color::YELLOW) {
+    k_blocks = blocks;
+  }
 
 int NxNCube::idx(int r, int c) const noexcept {
   return (r * this->n) + c;
@@ -79,7 +81,7 @@ void NxNCube::draw() const {
   for (int i = 0; i < this->n; ++i) {
     std::cout << filler;
     for (int j = 0; j < this->n; ++j) {
-      std::cout << m_top[idx(i, j)] << " ";
+      std::cout << m_top[idx(i, j)];
     }
     std::cout << std::endl;
   }
@@ -87,16 +89,16 @@ void NxNCube::draw() const {
   // main "belt" of faces
   for (int i = 0; i < this->n; ++i) {
     for (int j = 0; j < this->n; ++j) {
-      std::cout << m_left[idx(i, j)] << " ";
+      std::cout << m_left[idx(i, j)];
     }
     for (int j = 0; j < this->n; ++j) {
-      std::cout << m_front[idx(i, j)] << " ";
+      std::cout << m_front[idx(i, j)];
     }
     for (int j = 0; j < this->n; ++j) {
-      std::cout << m_right[idx(i, j)] << " ";
+      std::cout << m_right[idx(i, j)];
     }
     for (int j = 0; j < this->n; ++j) {
-      std::cout << m_back[idx(i, j)] << " ";
+      std::cout << m_back[idx(i, j)];
     }
     std::cout << std::endl;
   }
@@ -105,7 +107,7 @@ void NxNCube::draw() const {
   for (int i = 0; i < this->n; ++i) {
     std::cout << filler;
     for (int j = 0; j < this->n; ++j) {
-      std::cout << m_bottom[idx(i, j)] << " ";
+      std::cout << m_bottom[idx(i, j)];
     }
     std::cout << std::endl;
   }
@@ -341,6 +343,10 @@ void NxNCube::play() {
 }
 
 std::ostream &operator<<(std::ostream &os, NxNCube::color val) {
-  os << NxNCube::stickers[val];
+  if (NxNCube::k_blocks) {
+    os << NxNCube::STICKERS_BLOCKS[val];
+  } else {
+    os << NxNCube::STICKERS_LETTERS[val];
+  }
   return os;
 }

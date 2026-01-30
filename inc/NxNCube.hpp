@@ -19,21 +19,31 @@ class NxNCube {
     RESET
   };
 
-  inline static const std::string stickers[] = {"\033[1;38;2;255;255;255;49mW",
-                                                "\033[1;38;2;255;165;0;49mO",
-                                                "\033[1;38;2;0;255;0;49mG",
-                                                "\033[1;38;2;255;0;0;49mR",
-                                                "\033[1;38;2;0;0;255;49mB",
-                                                "\033[1;38;2;255;255;0;49mY",
-                                                "\033[0m"};
-  friend std::ostream &operator<<(std::ostream &os, NxNCube::color val);
-
   std::vector<NxNCube::color> m_top;
   std::vector<NxNCube::color> m_left;
   std::vector<NxNCube::color> m_front;
   std::vector<NxNCube::color> m_right;
   std::vector<NxNCube::color> m_back;
   std::vector<NxNCube::color> m_bottom;
+
+  inline static bool k_blocks = true;
+
+  inline static const std::string STICKERS_BLOCKS[] = {"\033[1;38;2;255;255;255;49m██",
+                                                "\033[1;38;2;255;165;0;49m██",
+                                                "\033[1;38;2;0;255;0;49m██",
+                                                "\033[1;38;2;255;0;0;49m██",
+                                                "\033[1;38;2;0;0;255;49m██",
+                                                "\033[1;38;2;255;255;0;49m██",
+                                                "\033[0m"};
+
+  inline static const std::string STICKERS_LETTERS[] = {"\033[1;38;2;255;255;255;49mW ",
+                                                "\033[1;38;2;255;165;0;49mO ",
+                                                "\033[1;38;2;0;255;0;49mG ",
+                                                "\033[1;38;2;255;0;0;49mR ",
+                                                "\033[1;38;2;0;0;255;49mB ",
+                                                "\033[1;38;2;255;255;0;49mY ",
+                                                "\033[0m"};
+  friend std::ostream &operator<<(std::ostream &os, NxNCube::color val);
 
   inline static const std::vector<std::string> VALID_MOVES = {"u", "ui", "u2",
                                                               "l", "li", "l2",
@@ -116,7 +126,7 @@ class NxNCube {
    * 
    * @param layers Number of layers in the cube (layers > 0)
    */
-  NxNCube(int layers);
+  NxNCube(int layers, bool blocks);
 
   /**
    * @brief Displays a 2D net representing the state of the puzzle
