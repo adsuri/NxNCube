@@ -294,6 +294,58 @@ void NxNCube::move(const std::string &move, int depth) {
     if (depth == this->n) {
       this->rotate_half_turn(m_left);
     }
+  } else if (move == "f") {
+    this->rotate_cw(m_front);
+
+    for (int layer = 0; layer < depth; ++layer) {
+      for (int c = 0; c < this->n; ++c) {
+        NxNCube::color temp_bottom = m_bottom[idx(layer, c)];
+        
+        m_bottom[idx(layer, c)] = m_right[idx(this->n - 1 - c, layer)];
+        m_right[idx(this->n - 1 - c, layer)] = m_top[idx(this->n - 1- layer, this->n - 1 - c)];
+        m_top[idx(this->n - 1- layer, this->n - 1 - c)] = m_left[idx(c, this->n - 1 - layer)];
+        m_left[idx(c, this->n - 1 - layer)] = temp_bottom;
+      }
+    }
+
+    if (depth == this->n) {
+      this->rotate_ccw(m_back);
+    }
+  } else if (move == "fi") {
+    this->rotate_ccw(m_front);
+
+    for (int layer = 0; layer < depth; ++layer) {
+      for (int c = 0; c < this->n; ++c) {
+        NxNCube::color temp_bottom = m_bottom[idx(layer, c)];
+
+        m_bottom[idx(layer, c)] = m_left[idx(c, this->n - 1 - layer)];
+        m_left[idx(c, this->n - 1 - layer)] = m_top[idx(this->n - 1- layer, this->n - 1 - c)];
+        m_top[idx(this->n - 1- layer, this->n - 1 - c)] = m_right[idx(this->n - 1 - c, layer)];
+        m_right[idx(this->n - 1 - c, layer)] = temp_bottom;
+      }
+    }
+
+    if (depth == this->n) {
+      this->rotate_cw(m_back);
+    }
+  } else if (move == "f2") {
+    this->rotate_half_turn(m_front);
+
+    for (int layer = 0; layer < depth; ++layer) {
+      for (int c = 0; c < this->n; ++c) {
+        NxNCube::color temp_bottom = m_bottom[idx(layer, c)];
+        NxNCube::color temp_left = m_left[idx(c, this->n - 1 - layer)];
+
+        m_bottom[idx(layer, c)] = m_top[idx(this->n - 1- layer, this->n - 1 - c)];
+        m_top[idx(this->n - 1- layer, this->n - 1 - c)] = temp_bottom;
+        m_left[idx(c, this->n - 1 - layer)] = m_right[idx(this->n - 1 - c, layer)];
+        m_right[idx(this->n - 1 - c, layer)] = temp_left;
+      }
+    }
+
+    if (depth == this->n) {
+      this->rotate_half_turn(m_back);
+    }
   }
 
   else {
