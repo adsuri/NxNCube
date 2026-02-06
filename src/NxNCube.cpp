@@ -362,15 +362,22 @@ void NxNCube::play() {
     std::cout << "Valid moves are: {'u', 'ui', 'u2', 'l', 'li', 'l2', 'f', 'fi', 'f2', 'r', 'ri', 'r2', 'b', 'bi', 'b2', 'd', 'di', 'd2'}" << std::endl;
 
     std::cout << "What move?: ";
-    std::cin >> input;
+    if (!(std::cin >> input)) {
+      std::cout << std::endl;
+      return;
+    }
     input = util::string_lower(input);
 
     if (input == "done") { return; }
 
     while (!this->is_valid_move(input)) {
       std::cout << "Invalid move, try again: ";
-      std::cin >> input;
+      if (!(std::cin >> input)) {
+        std::cout << std::endl;
+        return;
+      }
       input = util::string_lower(input);
+
       if (input == "done") { return; }
     }
     std::string side = input;
@@ -383,7 +390,10 @@ void NxNCube::play() {
 
     while (!this->is_valid_depth(input)) {
       std::cout << "Invalid number of layers, try again: ";
-      std::cin >> input;
+      if (!(std::cin >> input)) {
+        std::cout << std::endl;
+        return;
+      }
       input = util::string_lower(input);
 
       if(input == "done") { return; }
