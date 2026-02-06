@@ -19,30 +19,32 @@ class NxNCube {
     RESET
   };
 
-  std::vector<NxNCube::color> m_top;
-  std::vector<NxNCube::color> m_left;
-  std::vector<NxNCube::color> m_front;
-  std::vector<NxNCube::color> m_right;
-  std::vector<NxNCube::color> m_back;
-  std::vector<NxNCube::color> m_bottom;
+  using Face = std::vector<NxNCube::color>; 
+
+  Face m_top;
+  Face m_left;
+  Face m_front;
+  Face m_right;
+  Face m_back;
+  Face m_bottom;
 
   inline static bool k_blocks = true;
 
   inline static const std::string STICKERS_BLOCKS[] = {"\033[1;38;2;255;255;255;49m██",
-                                                "\033[1;38;2;255;165;0;49m██",
-                                                "\033[1;38;2;0;255;0;49m██",
-                                                "\033[1;38;2;255;0;0;49m██",
-                                                "\033[1;38;2;0;0;255;49m██",
-                                                "\033[1;38;2;255;255;0;49m██",
-                                                "\033[0m"};
+                                                       "\033[1;38;2;255;165;0;49m██",
+                                                       "\033[1;38;2;0;255;0;49m██",
+                                                       "\033[1;38;2;255;0;0;49m██",
+                                                       "\033[1;38;2;0;0;255;49m██",
+                                                       "\033[1;38;2;255;255;0;49m██",
+                                                       "\033[0m"};
 
   inline static const std::string STICKERS_LETTERS[] = {"\033[1;38;2;255;255;255;49mW ",
-                                                "\033[1;38;2;255;165;0;49mO ",
-                                                "\033[1;38;2;0;255;0;49mG ",
-                                                "\033[1;38;2;255;0;0;49mR ",
-                                                "\033[1;38;2;0;0;255;49mB ",
-                                                "\033[1;38;2;255;255;0;49mY ",
-                                                "\033[0m"};
+                                                        "\033[1;38;2;255;165;0;49mO ",
+                                                        "\033[1;38;2;0;255;0;49mG ",
+                                                        "\033[1;38;2;255;0;0;49mR ",
+                                                        "\033[1;38;2;0;0;255;49mB ",
+                                                        "\033[1;38;2;255;255;0;49mY ",
+                                                        "\033[0m"};
   friend std::ostream &operator<<(std::ostream &os, NxNCube::color val);
 
   inline static const std::vector<std::string> VALID_MOVES = {"u", "ui", "u2",
@@ -70,7 +72,7 @@ class NxNCube {
    * @param face Reference to {`this->top`, `left`, `front`, `right`, `back`, or `bottom`}
    * 
    */
-  void rotate_cw(std::vector<NxNCube::color> &face);
+  void rotate_cw(Face &face);
 
   /**
    * @brief Rotates the elements in the 2D `vector` representing the given `face` counter-clockwise by a quarter-turn
@@ -80,7 +82,7 @@ class NxNCube {
    * @param face Reference to {`this->top`, `left`, `front`, `right`, `back`, or `bottom`}
    * 
    */
-  void rotate_ccw(std::vector<NxNCube::color> &face);
+  void rotate_ccw(Face &face);
 
   /**
    * @brief Rotates the elements in the 2D `vector` representing the given `face` by a half-turn
@@ -90,7 +92,7 @@ class NxNCube {
    * @param face Reference to {`this->top`, `left`, `front`, `right`, `back`, or `bottom`}
    * 
    */
-  void rotate_half_turn(std::vector<NxNCube::color> &face);
+  void rotate_half_turn(Face &face);
 
   /**
    * @brief Checks if a `string` is a valid move for a turn

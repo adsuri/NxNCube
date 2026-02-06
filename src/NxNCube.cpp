@@ -22,8 +22,8 @@ int NxNCube::idx(int r, int c) const noexcept {
   return (r * this->n) + c;
 }
 
-void NxNCube::rotate_cw(std::vector<NxNCube::color> &face) {
-  std::vector<NxNCube::color> temp(this->n * this->n, NxNCube::color::RESET);
+void NxNCube::rotate_cw(Face &face) {
+  Face temp(this->n * this->n, NxNCube::color::RESET);
 
   for (int r = 0; r < this->n; ++r) {
     for (int c = 0; c < this->n; ++c) {
@@ -33,8 +33,8 @@ void NxNCube::rotate_cw(std::vector<NxNCube::color> &face) {
   face = temp;
 }
 
-void NxNCube::rotate_ccw(std::vector<NxNCube::color> &face) {
-  std::vector<NxNCube::color> temp(this->n * this->n, NxNCube::color::RESET);
+void NxNCube::rotate_ccw(Face &face) {
+  Face temp(this->n * this->n, NxNCube::color::RESET);
 
   for (int r = 0; r < this->n; ++r) {
     for (int c = 0; c < this->n; ++c) {
@@ -44,8 +44,8 @@ void NxNCube::rotate_ccw(std::vector<NxNCube::color> &face) {
   face = temp;
 }
 
-void NxNCube::rotate_half_turn(std::vector<NxNCube::color> &face) {
-  std::vector<NxNCube::color> temp(this->n * this->n, NxNCube::color::RESET);
+void NxNCube::rotate_half_turn(Face &face) {
+  Face temp(this->n * this->n, NxNCube::color::RESET);
 
   for (int r = 0; r < this->n; ++r) {
     for (int c = 0; c < this->n; ++c) {
