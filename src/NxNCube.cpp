@@ -223,7 +223,7 @@ void NxNCube::move(const std::string &move, int depth) {
       this->rotate_cw(m_top);
     }
   } else if (move == "d2") {
-    this->rotate_half_turn(m_top);
+    this->rotate_half_turn(m_bottom);
 
     for (int layer = this->n - 1; layer >= this->n - depth; --layer) {
 
@@ -345,6 +345,110 @@ void NxNCube::move(const std::string &move, int depth) {
 
     if (depth == this->n) {
       this->rotate_half_turn(m_back);
+    }
+  } else if (move == "l") {
+    this->rotate_cw(m_left);
+
+    for (int layer = 0; layer < depth; ++layer) {
+      for (int r = 0; r < this->n; ++r) {
+        NxNCube::color temp_bottom = m_bottom[idx(r, layer)];
+        
+        m_bottom[idx(r, layer)] = m_front[idx(r, layer)];
+        m_front[idx(r, layer)] = m_top[idx(r, layer)];
+        m_top[idx(r, layer)] = m_back[idx(this->n - 1 - r, this->n - 1 - layer)];
+        m_back[idx(this->n - 1 - r, this->n - 1 - layer)] = temp_bottom;
+      }
+    }
+
+    if (depth == this->n) {
+      this->rotate_ccw(m_right);
+    }
+  } else if (move == "li") {
+    this->rotate_ccw(m_left);
+
+    for (int layer = 0; layer < depth; ++layer) {
+      for (int r = 0; r < this->n; ++r) {
+        NxNCube::color temp_bottom = m_bottom[idx(r, layer)];
+
+        m_bottom[idx(r, layer)] = m_back[idx(this->n - 1 - r, this->n - 1 - layer)];
+        m_back[idx(this->n - 1 - r, this->n - 1 - layer)] = m_top[idx(r, layer)];
+        m_top[idx(r, layer)] = m_front[idx(r, layer)];
+        m_front[idx(r, layer)] = temp_bottom;
+      }
+    }
+    
+    if (depth == this->n) {
+      this->rotate_cw(m_right);
+    }
+  } else if (move == "l2") {
+    this->rotate_half_turn(m_left);
+
+    for (int layer = 0; layer < depth; ++layer) {
+      for (int r = 0; r < this->n; ++r) {
+        NxNCube::color temp_bottom = m_bottom[idx(r, layer)];
+        NxNCube::color temp_front = m_front[idx(r, layer)];
+
+        m_bottom[idx(r, layer)] = m_top[idx(r, layer)];
+        m_top[idx(r, layer)] = temp_bottom;
+        m_front[idx(r, layer)] = m_back[idx(this->n - 1 - r, this->n - 1 - layer)];
+        m_back[idx(this->n - 1 - r, this->n - 1 - layer)] = temp_front;
+      }
+    }
+    
+    if (depth == this->n) {
+      this->rotate_half_turn(m_right);
+    }
+  } else if (move == "b") {
+    this->rotate_cw(m_back);
+
+    for (int layer = 0; layer < depth; ++layer) {
+      for (int c = 0; c < this->n; ++c) {
+        NxNCube::color temp_top = m_top[idx(layer, c)];
+
+        m_top[idx(layer, c)] = m_right[idx(c, this->n - 1 - layer)];
+        m_right[idx(c, this->n - 1 - layer)] = m_bottom[idx(this->n - 1 - layer, this->n - 1 - c)];
+        m_bottom[idx(this->n - 1 - layer, this->n - 1 - c)] = m_left[idx(this->n - 1 - c, layer)];
+        m_left[idx(this->n - 1 - c, layer)] = temp_top;
+      }
+    }
+
+    if (depth == this->n) {
+      this->rotate_ccw(m_front);
+    }
+  } else if (move == "bi") {
+    this->rotate_ccw(m_back);
+
+    for (int layer = 0; layer < depth; ++layer) {
+      for (int c = 0; c < this->n; ++c) {
+        NxNCube::color temp_top = m_top[idx(layer, c)];
+        
+        m_top[idx(layer, c)] = m_left[idx(this->n - 1 - c, layer)];
+        m_left[idx(this->n - 1 - c, layer)] = m_bottom[idx(this->n - 1 - layer, this->n - 1 - c)];
+        m_bottom[idx(this->n - 1 - layer, this->n - 1 - c)] = m_right[idx(c, this->n - 1 - layer)];
+        m_right[idx(c, this->n - 1 - layer)] = temp_top;
+      }
+    }
+
+    if (depth == this->n) {
+      this->rotate_cw(m_front);
+    }
+  } else if (move == "b2") {
+    this->rotate_half_turn(m_back);
+
+    for (int layer = 0; layer < depth; ++layer) {
+      for (int c = 0; c < this->n; ++c) {
+        NxNCube::color temp_top = m_top[idx(layer, c)];
+        NxNCube::color temp_left = m_left[idx(this->n - 1 - c, layer)];
+
+        m_top[idx(layer, c)] = m_bottom[idx(this->n - 1 - layer, this->n - 1 - c)];
+        m_bottom[idx(this->n - 1 - layer, this->n - 1 - c)] = temp_top;
+        m_left[idx(this->n - 1 - c, layer)] = m_right[idx(c, this->n - 1 - layer)];
+        m_right[idx(c, this->n - 1 - layer)] = temp_left;
+      }
+    }
+
+    if (depth == this->n) {
+      this->rotate_half_turn(m_front);
     }
   }
 
