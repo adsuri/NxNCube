@@ -12,6 +12,7 @@ Instructions:
 
 TODO:
   * Add rotations to rotate entire cube at once more easily
-  * Scramble function and argument
+  * Scrambling
+  * Make inputting commands to the cube more modular (ex:`command [args]`)
+  * Parse multiple moves in a single input
   * Solve check with timer (?)
-  * Parse multiple moves in a single input (?)
