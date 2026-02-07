@@ -52,7 +52,10 @@ class NxNCube {
                                                               "f", "fi", "f2",
                                                               "r", "ri", "r2",
                                                               "b", "bi", "b2",
-                                                              "d", "di", "d2"};
+                                                              "d", "di", "d2",
+                                                              "x", "xi", "x2",
+                                                              "y", "yi", "y2",
+                                                              "z", "zi", "z2"};
 
   /**
    * @brief Converts a 2D index `[r][c]` to a 1D index for a `this->n` x `this->n` long vector

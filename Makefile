@@ -26,4 +26,4 @@ build/nxncube: build/util.o build/NxNCube.o build/driver.o
 .SUFFIXES:
 
 clean:
-	rm -rvf *.exe *.o build/nxncube
+	rm -rvf build/*.exe build/*.o build/nxncube
