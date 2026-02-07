@@ -11,7 +11,6 @@ Instructions:
       3. `[letters]` is an optional argument that replaces the solid blocks of color with letters
 
 TODO:
-  * Finish basic moves
   * Add rotations to rotate entire cube at once more easily
   * Scramble function and argument
   * Solve check with timer (?)
