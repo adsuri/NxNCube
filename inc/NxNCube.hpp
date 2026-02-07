@@ -125,6 +125,8 @@ class NxNCube {
    */
   void move(const std::string &move, int depth);
 
+  void scramble(bool redraw);
+
  public:
   /**
    * @brief Construct a new NxNCube object

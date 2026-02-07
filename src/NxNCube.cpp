@@ -3,6 +3,9 @@
 #include <string>
 #include <vector>
 #include <cassert>
+#include <cmath>
+#include <chrono>
+#include <random>
 
 #include "NxNCube.hpp"
 #include "util.hpp"
@@ -458,6 +461,43 @@ void NxNCube::move(const std::string &move, int depth) {
   }
 }
 
+void NxNCube::scramble(bool redraw) {
+  const int move_count = ((this->n * this->n) / std::log10(this->n) + 15); // approximation of god's number for an nxn cube
+
+  const std::vector<std::string> faces = {"u", "l", "f", "r", "b", "d"};
+  const std::vector<std::string> dirs = {"", "i", "2"};
+
+  unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
+  std::mt19937 engine(seed);
+  std::uniform_int_distribution<int> face_dist(0, 5);
+  std::uniform_int_distribution<int> dir_dist(0, 2);
+  std::uniform_int_distribution<int> depth_dist(1, static_cast<int>(this->n / 2));
+
+  int curr_face = face_dist(engine);
+  int last_face = curr_face;
+
+  std::string move_to_do;
+  move_to_do += faces[curr_face];
+  move_to_do += dirs[dir_dist(engine)];
+
+  this->move(move_to_do, depth_dist(engine));
+  if (redraw) { this->clear_draw(); }
+
+  for (int i = 0; i < move_count; ++i) {
+    curr_face = face_dist(engine);
+    while (curr_face == last_face) { curr_face = face_dist(engine); }
+    last_face = curr_face;
+
+    move_to_do = faces[curr_face];
+    move_to_do += dirs[dir_dist(engine)];
+
+    this->move(move_to_do, depth_dist(engine));
+    if (redraw) { this->clear_draw(); }
+  }
+
+  if (!redraw) { this->clear_draw(); }
+}
+
 void NxNCube::play() {
   std::string input;
 
@@ -474,6 +514,9 @@ void NxNCube::play() {
     input = util::string_lower(input);
 
     if (input == "done") { return; }
+
+    if (input == "scramble") { this->scramble(false); continue; }
+    if (input == "scramble-redraw") { this->scramble(true); continue; }
 
     if      (input == "x")  { this->move("r",  this->n); continue; }
     else if (input == "xi") { this->move("ri", this->n); continue; }
