@@ -20,6 +20,7 @@ class NxNCube {
   };
 
   using Face = std::vector<NxNCube::color>; 
+  using MovePair = std::pair<std::string, int>;
 
   Face m_top;
   Face m_left;
@@ -28,23 +29,25 @@ class NxNCube {
   Face m_back;
   Face m_bottom;
 
-  inline static bool k_blocks = true;
+  std::string m_last_error;
+
+  inline static bool BLOCKS;
 
   inline static const std::string STICKERS_BLOCKS[] = {"\033[1;38;2;255;255;255;49m██",
-                                                       "\033[1;38;2;255;165;0;49m██",
-                                                       "\033[1;38;2;0;255;0;49m██",
-                                                       "\033[1;38;2;255;0;0;49m██",
-                                                       "\033[1;38;2;0;0;255;49m██",
-                                                       "\033[1;38;2;255;255;0;49m██",
-                                                       "\033[0m"};
+                                                                  "\033[1;38;2;255;165;0;49m██",
+                                                                  "\033[1;38;2;0;255;0;49m██",
+                                                                  "\033[1;38;2;255;0;0;49m██",
+                                                                  "\033[1;38;2;0;0;255;49m██",
+                                                                  "\033[1;38;2;255;255;0;49m██",
+                                                                  "\033[0m"};
 
   inline static const std::string STICKERS_LETTERS[] = {"\033[1;38;2;255;255;255;49mW ",
-                                                        "\033[1;38;2;255;165;0;49mO ",
-                                                        "\033[1;38;2;0;255;0;49mG ",
-                                                        "\033[1;38;2;255;0;0;49mR ",
-                                                        "\033[1;38;2;0;0;255;49mB ",
-                                                        "\033[1;38;2;255;255;0;49mY ",
-                                                        "\033[0m"};
+                                                                   "\033[1;38;2;255;165;0;49mO ",
+                                                                   "\033[1;38;2;0;255;0;49mG ",
+                                                                   "\033[1;38;2;255;0;0;49mR ",
+                                                                   "\033[1;38;2;0;0;255;49mB ",
+                                                                   "\033[1;38;2;255;255;0;49mY ",
+                                                                   "\033[0m"};
   friend std::ostream &operator<<(std::ostream &os, NxNCube::color val);
 
   inline static const std::vector<std::string> VALID_MOVES = {"u", "ui", "u2",
@@ -56,6 +59,10 @@ class NxNCube {
                                                               "x", "xi", "x2",
                                                               "y", "yi", "y2",
                                                               "z", "zi", "z2"};
+
+  inline static const std::vector<std::string> CMD_LIST = {"move",
+                                                           "scramble",
+                                                           "exit"};
 
   /**
    * @brief Converts a 2D index `[r][c]` to a 1D index for a `this->n` x `this->n` long vector
@@ -125,7 +132,9 @@ class NxNCube {
    */
   void move(const std::string &move, int depth);
 
-  void scramble(bool redraw);
+  void scramble();
+
+  std::pair<std::string, int> grab_move_pair(const std::string &str) const;
 
  public:
   /**
@@ -139,7 +148,7 @@ class NxNCube {
    * @brief Displays a 2D net representing the state of the puzzle
    * 
    */
-  void draw() const;
+  void draw();
 
   /**
    * @brief Clears the console
@@ -151,7 +160,7 @@ class NxNCube {
    * @brief Clears the console and calls this->draw()
    * 
    */
-  void clear_draw() const;
+  void clear_draw();
   
   /**
    * @brief Starts the main game loop

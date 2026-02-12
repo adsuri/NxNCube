@@ -6,6 +6,7 @@
 #include <cmath>
 #include <chrono>
 #include <random>
+#include <sstream>
 
 #include "NxNCube.hpp"
 #include "util.hpp"
@@ -18,8 +19,8 @@ NxNCube::NxNCube(int layers, bool blocks)
    m_right(n * n, NxNCube::color::RED),
    m_back(n * n, NxNCube::color::BLUE),
    m_bottom(n * n, NxNCube::color::YELLOW) {
-    k_blocks = blocks;
-  }
+    NxNCube::BLOCKS = blocks;
+}
 
 int NxNCube::idx(int r, int c) const noexcept {
   return (r * this->n) + c;
@@ -78,7 +79,7 @@ bool NxNCube::is_valid_depth(const std::string &input) const {
   return true;
 }
 
-void NxNCube::draw() const {
+void NxNCube::draw() {
   // top face
   const std::string filler(2 * this->n, ' ');
   for (int i = 0; i < this->n; ++i) {
@@ -115,13 +116,18 @@ void NxNCube::draw() const {
     std::cout << std::endl;
   }
   std::cout << NxNCube::color::RESET;
+  
+  if (m_last_error != "") {
+    std::cout << m_last_error << std::endl;
+    m_last_error = "";
+  }
 }
 
 void NxNCube::clear_console() const {
   std::cout << "\033[H\033[2J";
 }
 
-void NxNCube::clear_draw() const {
+void NxNCube::clear_draw() {
   this->clear_console();
   this->draw();
 }
@@ -461,7 +467,7 @@ void NxNCube::move(const std::string &move, int depth) {
   }
 }
 
-void NxNCube::scramble(bool redraw) {
+void NxNCube::scramble() {
   const int move_count = ((this->n * this->n) / std::log10(this->n) + 15); // approximation of god's number for an nxn cube
 
   const std::vector<std::string> faces = {"u", "l", "f", "r", "b", "d"};
@@ -481,7 +487,6 @@ void NxNCube::scramble(bool redraw) {
   move_to_do += dirs[dir_dist(engine)];
 
   this->move(move_to_do, depth_dist(engine));
-  if (redraw) { this->clear_draw(); }
 
   for (int i = 0; i < move_count; ++i) {
     curr_face = face_dist(engine);
@@ -492,10 +497,17 @@ void NxNCube::scramble(bool redraw) {
     move_to_do += dirs[dir_dist(engine)];
 
     this->move(move_to_do, depth_dist(engine));
-    if (redraw) { this->clear_draw(); }
   }
 
-  if (!redraw) { this->clear_draw(); }
+  this->clear_draw();
+}
+
+std::pair<std::string, int> NxNCube::grab_move_pair(const std::string &str) const {
+  const MovePair BAD_MOVE = {"BAD_MOVE", -1};
+
+  if (util::str_in_vector(NxNCube::VALID_MOVES, str)) { return {str, 1}; }
+
+  return BAD_MOVE;
 }
 
 void NxNCube::play() {
@@ -503,80 +515,131 @@ void NxNCube::play() {
 
   while (true) {
     this->clear_draw();
-    std::cout << "Valid moves are: {'u', 'ui', 'u2', 'l', 'li', 'l2', 'f', 'fi', 'f2', 'r', 'ri', 'r2', 'b', 'bi', 'b2', 'd', 'di', 'd2'}" << std::endl;
-    std::cout << "Valid rotations are: {'x', 'xi', 'x2', 'y', 'yi', 'y2', 'z', 'zi', 'z2'}" << std::endl;
 
-    std::cout << "What move?: ";
-    if (!(std::cin >> input)) {
-      std::cout << std::endl;
+    std::vector<std::string> args;
+    if (!util::grab_input("$ ", &args)) { return; } // handles EOF
+
+    while (!(util::str_in_vector(NxNCube::CMD_LIST, args[0]))) {
+      if (!util::grab_input("\033[1;38;2;255;0;0;49mEnter a valid command\033[0m\n$ ", &args)) { return; }
+    }
+
+    if (args[0] == "move") {
+      std::vector<MovePair> moves_to_do;
+      bool are_moves_valid = true;
+
+      if (args.size() == 0) {
+        m_last_error = "`move` needs arguments";
+      } else {
+        for (int i = 1; i < args.size(); ++i) {
+          MovePair curr_pair = this->grab_move_pair(args[i]);
+          if (curr_pair.first == "BAD_MOVE") {
+            m_last_error = args[i];
+            m_last_error += " is not a valid move";
+            are_moves_valid = false;
+            continue;
+          }
+
+          moves_to_do.push_back(curr_pair);
+        }
+
+        if (are_moves_valid) {
+          for (const MovePair &curr_move : moves_to_do) {
+            this->move(curr_move.first, curr_move.second);
+          }
+        }
+      }
+    } else if (args[0] == "scramble") {
+      if (args.size() != 1) {
+        m_last_error = "`scramble` has no arguments";
+      } else {
+        this->scramble();
+      }
+    } else if (args[0] == "exit") {
       return;
+    } else {
+      std::cout << "You shouldn't have gotten here..." << std::endl;
+      assert(false);
     }
-    input = util::string_lower(input);
-
-    if (input == "done") { return; }
-
-    if (input == "scramble") { this->scramble(false); continue; }
-    if (input == "scramble-redraw") { this->scramble(true); continue; }
-
-    if      (input == "x")  { this->move("r",  this->n); continue; }
-    else if (input == "xi") { this->move("ri", this->n); continue; }
-    else if (input == "x2") { this->move("r2", this->n); continue; }
-    else if (input == "y")  { this->move("u",  this->n); continue; }
-    else if (input == "yi") { this->move("ui", this->n); continue; }
-    else if (input == "y2") { this->move("u2", this->n); continue; }
-    else if (input == "z")  { this->move("f",  this->n); continue; }
-    else if (input == "zi") { this->move("fi", this->n); continue; }
-    else if (input == "z2") { this->move("f2", this->n); continue; }
-
-    bool to_continue = false;
-    while (!this->is_valid_move(input)) {
-      std::cout << "Invalid move, try again: ";
-      if (!(std::cin >> input)) {
-        std::cout << std::endl;
-        return;
-      }
-      input = util::string_lower(input);
-
-      if      (input == "x")  { this->move("r",  this->n); to_continue = true; }
-      else if (input == "xi") { this->move("ri", this->n); to_continue = true; }
-      else if (input == "x2") { this->move("r2", this->n); to_continue = true; }
-      else if (input == "y")  { this->move("u",  this->n); to_continue = true; }
-      else if (input == "yi") { this->move("ui", this->n); to_continue = true; }
-      else if (input == "y2") { this->move("u2", this->n); to_continue = true; }
-      else if (input == "z")  { this->move("f",  this->n); to_continue = true; }
-      else if (input == "zi") { this->move("fi", this->n); to_continue = true; }
-      else if (input == "z2") { this->move("f2", this->n); to_continue = true; }
-
-      if (input == "done") { return; }
-    }
-    if (to_continue) { continue; }
-    
-    std::string side = input;
-
-    std::cout << "How many layers?: " ;
-    std::cin >> input;
-    input = util::string_lower(input);
-
-    if(input == "done") { return; }
-
-    while (!this->is_valid_depth(input)) {
-      std::cout << "Invalid number of layers, try again: ";
-      if (!(std::cin >> input)) {
-        std::cout << std::endl;
-        return;
-      }
-      input = util::string_lower(input);
-
-      if(input == "done") { return; }
-    }
-    int layers = std::stoi(input);
-
-    this->move(side, layers);
   }
+
+  // std::string input;
+
+  // while (true) {
+  //   this->clear_draw();
+  //   std::cout << "Valid moves are: {'u', 'ui', 'u2', 'l', 'li', 'l2', 'f', 'fi', 'f2', 'r', 'ri', 'r2', 'b', 'bi', 'b2', 'd', 'di', 'd2'}" << std::endl;
+  //   std::cout << "Valid rotations are: {'x', 'xi', 'x2', 'y', 'yi', 'y2', 'z', 'zi', 'z2'}" << std::endl;
+
+  //   std::cout << "What move?: ";
+  //   if (!(std::cin >> input)) {
+  //     std::cout << std::endl;
+  //     return;
+  //   }
+  //   input = util::string_lower(input);
+
+  //   if (input == "done") { return; }
+
+  //   if (input == "scramble") { this->scramble(false); continue; }
+  //   if (input == "scramble-redraw") { this->scramble(true); continue; }
+
+  //   if      (input == "x")  { this->move("r",  this->n); continue; }
+  //   else if (input == "xi") { this->move("ri", this->n); continue; }
+  //   else if (input == "x2") { this->move("r2", this->n); continue; }
+  //   else if (input == "y")  { this->move("u",  this->n); continue; }
+  //   else if (input == "yi") { this->move("ui", this->n); continue; }
+  //   else if (input == "y2") { this->move("u2", this->n); continue; }
+  //   else if (input == "z")  { this->move("f",  this->n); continue; }
+  //   else if (input == "zi") { this->move("fi", this->n); continue; }
+  //   else if (input == "z2") { this->move("f2", this->n); continue; }
+
+  //   bool to_continue = false;
+  //   while (!this->is_valid_move(input)) {
+  //     std::cout << "Invalid move, try again: ";
+  //     if (!(std::cin >> input)) {
+  //       std::cout << std::endl;
+  //       return;
+  //     }
+  //     input = util::string_lower(input);
+
+  //     if      (input == "x")  { this->move("r",  this->n); to_continue = true; }
+  //     else if (input == "xi") { this->move("ri", this->n); to_continue = true; }
+  //     else if (input == "x2") { this->move("r2", this->n); to_continue = true; }
+  //     else if (input == "y")  { this->move("u",  this->n); to_continue = true; }
+  //     else if (input == "yi") { this->move("ui", this->n); to_continue = true; }
+  //     else if (input == "y2") { this->move("u2", this->n); to_continue = true; }
+  //     else if (input == "z")  { this->move("f",  this->n); to_continue = true; }
+  //     else if (input == "zi") { this->move("fi", this->n); to_continue = true; }
+  //     else if (input == "z2") { this->move("f2", this->n); to_continue = true; }
+
+  //     if (input == "done") { return; }
+  //   }
+  //   if (to_continue) { continue; }
+    
+  //   std::string side = input;
+
+  //   std::cout << "How many layers?: " ;
+  //   std::cin >> input;
+  //   input = util::string_lower(input);
+
+  //   if(input == "done") { return; }
+
+  //   while (!this->is_valid_depth(input)) {
+  //     std::cout << "Invalid number of layers, try again: ";
+  //     if (!(std::cin >> input)) {
+  //       std::cout << std::endl;
+  //       return;
+  //     }
+  //     input = util::string_lower(input);
+
+  //     if(input == "done") { return; }
+  //   }
+  //   int layers = std::stoi(input);
+
+  //   this->move(side, layers);
+  // }
 }
 
 std::ostream &operator<<(std::ostream &os, NxNCube::color val) {
-  if (NxNCube::k_blocks) {
+  if (NxNCube::BLOCKS) {
     os << NxNCube::STICKERS_BLOCKS[val];
   } else {
     os << NxNCube::STICKERS_LETTERS[val];

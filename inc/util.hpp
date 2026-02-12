@@ -32,6 +32,9 @@ namespace util {
    * 
    */
   std::string string_lower(std::string str);
+
+  // OVERWRITES OUTPUT VECTOR
+  bool grab_input(const std::string &prompt, std::vector<std::string> *output);
 }
 
 #endif

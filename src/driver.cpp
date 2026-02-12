@@ -1,8 +1,15 @@
 #include <iostream>
 #include <string>
+#include <cstdlib>
+#include <csignal>
 
 #include "NxNCube.hpp"
 #include "util.hpp"
+
+void restore_terminal(int sig) {
+  std::system("tput rmcup");
+  std::exit(sig);
+}
 
 int main(int argc, char *argv[]) {
   const std::string arg_error = "USAGE: ./game.exe LAYERS [letters]";
@@ -38,5 +45,10 @@ int main(int argc, char *argv[]) {
   const int n = std::stoi(argv[1]);
   NxNCube cube(n, blocks);
 
+  std::signal(SIGINT, restore_terminal);
+  std::signal(SIGTERM, restore_terminal);
+
+  std::system("tput smcup");
   cube.play();
+  restore_terminal(0);
 }
