@@ -6,24 +6,35 @@ CXXFLAGS ?= --std=c++17 -Wall -Werror -pedantic -g -Wno-sign-compare -Wno-commen
 
 INCLUDE = inc
 
-make all: build/nxncube
+all: build/nxncube
 
-# build/nxncube: src/driver.cpp src/NxNCube.cpp src/util.cpp
-# 	$(CXX) $(CXXFLAGS) $^ -I $(INCLUDE) -o $@
+debug: build/nxncube_d
+
+build/util_d.o: src/util.cpp
+	$(CXX) -c $(CXXFLAGS) $^ -I $(INCLUDE) -o $@
+
+build/NxNCube_d.o: src/NxNCube.cpp
+	$(CXX) -c $(CXXFLAGS) $^ -I $(INCLUDE) -o $@
+
+build/driver_d.o: src/driver.cpp
+	$(CXX) -c $(CXXFLAGS) $^ -I $(INCLUDE) -o $@
+
+build/nxncube_d: build/util_d.o build/NxNCube_d.o build/driver_d.o
+	$(CXX) $(CXXFLAGS) $^ -o build/nxncube_d
 
 build/util.o: src/util.cpp
-	$(CXX) -c $(CXXFLAGS) $^ -I $(INCLUDE) -o $@
+	$(CXX) -c $^ -I $(INCLUDE) -o $@
 
 build/NxNCube.o: src/NxNCube.cpp
-	$(CXX) -c $(CXXFLAGS) $^ -I $(INCLUDE) -o $@
+	$(CXX) -c $^ -I $(INCLUDE) -o $@
 
 build/driver.o: src/driver.cpp
-	$(CXX) -c $(CXXFLAGS) $^ -I $(INCLUDE) -o $@
+	$(CXX) -c $^ -I $(INCLUDE) -o $@
 
 build/nxncube: build/util.o build/NxNCube.o build/driver.o
-	$(CXX) $(CXXFLAGS) $^ -o build/nxncube
+	$(CXX) $^ -o build/nxncube
 
 .SUFFIXES:
 
 clean:
-	rm -rvf build/*.exe build/*.o build/nxncube
+	rm -rvf build/*.exe build/*.o build/nxncube build/nxncube_d
