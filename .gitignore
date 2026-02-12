@@ -27,6 +27,9 @@ cache/
 # Output files
 *.log
 *.out
+*.o
+build/
+debug/
 
 # Compiled Object files
 *.slo
