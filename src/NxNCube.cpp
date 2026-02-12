@@ -535,24 +535,27 @@ void NxNCube::play() {
     this->clear_draw();
 
     std::vector<std::string> args;
-    if (!util::grab_input("$ ", &args)) { return; } // handles EOF
+    if (!util::grab_input(&args)) { return; } // handles EOF
 
-    while (!(util::str_in_vector(NxNCube::CMD_LIST, args[0]))) {
-      if (!util::grab_input("\033[1;38;2;255;0;0;49mEnter a valid command\033[0m\n$ ", &args)) { return; }
+    if (!(util::str_in_vector(NxNCube::CMD_LIST, args[0]))) {
+      m_last_error = "\033[1;38;2;255;0;0;49mEnter a valid command\033[0m";
+      continue;
     }
 
     if (args[0] == "move") {
       std::vector<MovePair> moves_to_do;
       bool are_moves_valid = true;
 
-      if (args.size() == 0) {
-        m_last_error = "`move` needs arguments";
+      if (args.size() == 1) {
+        m_last_error = "\033[1;38;2;255;0;0;49m`move` needs arguments\033[0m";
+        continue;
       } else {
         for (int i = 1; i < args.size(); ++i) {
           MovePair curr_pair = this->grab_move_pair(args[i]);
           if (curr_pair.first == "BAD_MOVE") {
-            m_last_error = args[i];
-            m_last_error += " is not a valid move";
+            m_last_error = "\033[1;38;2;255;0;0;49m`";
+            m_last_error += args[i];
+            m_last_error += "` is not a valid move\033[0m";
             are_moves_valid = false;
             continue;
           }
@@ -568,7 +571,7 @@ void NxNCube::play() {
       }
     } else if (args[0] == "scramble") {
       if (args.size() != 1) {
-        m_last_error = "`scramble` has no arguments";
+        m_last_error = "\033[1;38;2;255;0;0;49m`scramble` has no arguments\033[0m\n";
       } else {
         this->scramble();
       }

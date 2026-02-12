@@ -26,9 +26,9 @@ std::string util::string_lower(std::string str) {
   return str;
 }
 
-bool util::grab_input(const std::string &prompt, std::vector<std::string> *output) {
+bool util::grab_input(std::vector<std::string> *output) {
   std::string input;
-  std::cout << prompt;
+  std::cout << "$ ";
 
   if (!std::getline(std::cin, input)) { return false; }
   input = util::string_lower(input);
