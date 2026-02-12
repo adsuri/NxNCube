@@ -68,9 +68,9 @@ class NxNCube {
                                                                            "b", "bi", "b2",
                                                                            "d", "di", "d2"};
 
-  inline static const std::vector<std::string> CMD_LIST = {"move",
-                                                           "scramble",
-                                                           "exit"};
+  inline static const std::vector<std::string> CMD_LIST = {"scramble",
+                                                           "exit",
+                                                           "reset"};
 
   /**
    * @brief Converts a 2D index `[r][c]` to a 1D index for a `this->n` x `this->n` long vector

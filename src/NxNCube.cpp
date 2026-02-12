@@ -572,36 +572,36 @@ void NxNCube::play() {
     std::vector<std::string> args;
     if (!util::grab_input(&args)) { return; } // handles EOF
 
-    if (!(util::str_in_vector(NxNCube::CMD_LIST, args[0]))) {
-      m_last_error = "\033[1;38;2;255;0;0;49mEnter a valid command\033[0m";
+    bool is_cmd = util::str_in_vector(NxNCube::CMD_LIST, args[0]);
+    bool is_move = (this->grab_move_pair(args[0])).first != "BAD_MOVE";
+
+    bool is_first_arg_valid = is_cmd || is_move;
+
+    if (!is_first_arg_valid) {
+      m_last_error = "\033[1;38;2;255;0;0;49mEnter a valid command or list of moves\033[0m";
       continue;
     }
 
-    if (args[0] == "move") {
+    if (is_move) {
       std::vector<MovePair> moves_to_do;
       bool are_moves_valid = true;
 
-      if (args.size() == 1) {
-        m_last_error = "\033[1;38;2;255;0;0;49m`move` needs arguments\033[0m";
-        continue;
-      } else {
-        for (int i = 1; i < args.size(); ++i) {
-          MovePair curr_pair = this->grab_move_pair(args[i]);
-          if (curr_pair.first == "BAD_MOVE") {
-            m_last_error = "\033[1;38;2;255;0;0;49m`";
-            m_last_error += args[i];
-            m_last_error += "` is not a valid move\033[0m";
-            are_moves_valid = false;
-            continue;
-          }
-
-          moves_to_do.push_back(curr_pair);
+      for (int i = 0; i < args.size(); ++i) {
+        MovePair curr_pair = this->grab_move_pair(args[i]);
+        if (curr_pair.first == "BAD_MOVE") {
+          m_last_error = "\033[1;38;2;255;0;0;49m`";
+          m_last_error += args[i];
+          m_last_error += "` is not a valid move\033[0m";
+          are_moves_valid = false;
+          continue;
         }
 
-        if (are_moves_valid) {
-          for (const MovePair &curr_move : moves_to_do) {
-            this->move(curr_move.first, curr_move.second);
-          }
+        moves_to_do.push_back(curr_pair);
+      }
+
+      if (are_moves_valid) {
+        for (const MovePair &curr_move : moves_to_do) {
+          this->move(curr_move.first, curr_move.second);
         }
       }
     } else if (args[0] == "scramble") {
@@ -612,6 +612,13 @@ void NxNCube::play() {
       }
     } else if (args[0] == "exit") {
       return;
+    } else if (args[0] == "reset") {
+      m_top = Face(this->n * this->n, NxNCube::color::WHITE);
+      m_left = Face(this->n * this->n, NxNCube::color::ORANGE);
+      m_front = Face(this->n * this->n, NxNCube::color::GREEN);
+      m_right = Face(this->n * this->n, NxNCube::color::RED);
+      m_back = Face(this->n * this->n, NxNCube::color::BLUE);
+      m_bottom = Face(this->n * this->n, NxNCube::color::YELLOW);
     } else {
       std::cout << "You shouldn't have gotten here..." << std::endl;
       assert(false);
