@@ -519,12 +519,47 @@ void NxNCube::scramble() {
   this->clear_draw();
 }
 
-std::pair<std::string, int> NxNCube::grab_move_pair(const std::string &str) const {
+NxNCube::SplitMove NxNCube::split_move(const std::string &str) const {
+  const SplitMove BAD_MOVE = {"BAD_MOVE", "BAD_MOVE"};
+  const std::string delim = "-";
+  int delim_index = -1;
+
+  for (int i = 0; i < str.length(); ++i) {
+    const char c = str[i];
+
+    if (c == '-') {
+      delim_index = i;
+      continue;
+    }
+  }
+
+  if (delim_index == -1 || delim_index == 0 || delim_index == str.length() - 1) { return BAD_MOVE; }
+
+  std::string first_part;
+  std::string second_part;
+
+  for (int i = 0; i < delim_index; ++i) {
+    first_part += str[i];
+  }
+  for (int i = delim_index + 1; i < str.length(); ++i) {
+    second_part += str[i];
+  }
+
+  return {first_part, second_part};
+}
+
+NxNCube::MovePair NxNCube::grab_move_pair(const std::string &str) const {
   const MovePair BAD_MOVE = {"BAD_MOVE", -1};
 
   if (util::str_in_vector(NxNCube::VALID_MOVES, str)) { return {str, 1}; }
 
-  return BAD_MOVE;
+  SplitMove move = this->split_move(str);
+
+  if (!this->is_valid_depth(move.first)) { return BAD_MOVE; }
+  // ex: 2-x is invalid
+  if (move.second == "BAD_MOVE" || (!util::str_in_vector(NxNCube::VALID_MOVES_NO_ROTATIONS, move.second))) { return BAD_MOVE; }
+
+  return {move.second, std::stoi(move.first)};
 }
 
 void NxNCube::play() {

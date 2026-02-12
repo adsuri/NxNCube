@@ -21,6 +21,7 @@ class NxNCube {
 
   using Face = std::vector<NxNCube::color>; 
   using MovePair = std::pair<std::string, int>;
+  using SplitMove = std::pair<std::string, std::string>;
 
   Face m_top;
   Face m_left;
@@ -59,6 +60,13 @@ class NxNCube {
                                                               "x", "xi", "x2",
                                                               "y", "yi", "y2",
                                                               "z", "zi", "z2"};
+
+  inline static const std::vector<std::string> VALID_MOVES_NO_ROTATIONS = {"u", "ui", "u2",
+                                                                           "l", "li", "l2",
+                                                                           "f", "fi", "f2",
+                                                                           "r", "ri", "r2",
+                                                                           "b", "bi", "b2",
+                                                                           "d", "di", "d2"};
 
   inline static const std::vector<std::string> CMD_LIST = {"move",
                                                            "scramble",
@@ -134,7 +142,9 @@ class NxNCube {
 
   void scramble();
 
-  std::pair<std::string, int> grab_move_pair(const std::string &str) const;
+  SplitMove split_move(const std::string &str) const;
+
+  MovePair grab_move_pair(const std::string &str) const;
 
  public:
   /**
