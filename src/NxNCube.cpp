@@ -604,7 +604,7 @@ void NxNCube::play() {
       }
     } else if (args[0] == "scramble") {
       if (args.size() != 1) {
-        m_last_error = "\033[1;38;2;255;0;0;49m`scramble` has no arguments\033[0m\n";
+        m_last_error = "\033[1;38;2;255;0;0;49m`scramble` has no arguments\033[0m";
       } else {
         this->scramble();
       }
