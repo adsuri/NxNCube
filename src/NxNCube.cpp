@@ -119,7 +119,6 @@ void NxNCube::draw() {
   
   if (m_last_error != "") {
     std::cout << m_last_error << std::endl;
-    m_last_error = "";
   }
 }
 
@@ -533,6 +532,7 @@ void NxNCube::play() {
 
   while (true) {
     this->clear_draw();
+    m_last_error = "";
 
     std::vector<std::string> args;
     if (!util::grab_input(&args)) { return; } // handles EOF
