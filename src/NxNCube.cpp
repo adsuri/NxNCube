@@ -515,8 +515,6 @@ void NxNCube::scramble() {
 
     this->move(move_to_do, depth_dist(engine));
   }
-
-  this->clear_draw();
 }
 
 NxNCube::SplitMove NxNCube::split_move(const std::string &str) const {
