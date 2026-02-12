@@ -459,6 +459,24 @@ void NxNCube::move(const std::string &move, int depth) {
     if (depth == this->n) {
       this->rotate_half_turn(m_front);
     }
+  } else if (move == "x") {
+    this->move("r", this->n);
+  } else if (move == "xi") {
+    this->move("ri", this->n);
+  } else if (move == "x2") {
+    this->move("r2", this->n);
+  } else if (move == "y") {
+    this->move("u", this->n);
+  } else if (move == "yi") {
+    this->move("ui", this->n);
+  } else if (move == "y2") {
+    this->move("u2", this->n);
+  } else if (move == "z") {
+    this->move("f", this->n);
+  } else if (move == "zi") {
+    this->move("fi", this->n);
+  } else if (move == "z2") {
+    this->move("f2", this->n);
   }
 
   else {
@@ -561,81 +579,6 @@ void NxNCube::play() {
       assert(false);
     }
   }
-
-  // std::string input;
-
-  // while (true) {
-  //   this->clear_draw();
-  //   std::cout << "Valid moves are: {'u', 'ui', 'u2', 'l', 'li', 'l2', 'f', 'fi', 'f2', 'r', 'ri', 'r2', 'b', 'bi', 'b2', 'd', 'di', 'd2'}" << std::endl;
-  //   std::cout << "Valid rotations are: {'x', 'xi', 'x2', 'y', 'yi', 'y2', 'z', 'zi', 'z2'}" << std::endl;
-
-  //   std::cout << "What move?: ";
-  //   if (!(std::cin >> input)) {
-  //     std::cout << std::endl;
-  //     return;
-  //   }
-  //   input = util::string_lower(input);
-
-  //   if (input == "done") { return; }
-
-  //   if (input == "scramble") { this->scramble(false); continue; }
-  //   if (input == "scramble-redraw") { this->scramble(true); continue; }
-
-  //   if      (input == "x")  { this->move("r",  this->n); continue; }
-  //   else if (input == "xi") { this->move("ri", this->n); continue; }
-  //   else if (input == "x2") { this->move("r2", this->n); continue; }
-  //   else if (input == "y")  { this->move("u",  this->n); continue; }
-  //   else if (input == "yi") { this->move("ui", this->n); continue; }
-  //   else if (input == "y2") { this->move("u2", this->n); continue; }
-  //   else if (input == "z")  { this->move("f",  this->n); continue; }
-  //   else if (input == "zi") { this->move("fi", this->n); continue; }
-  //   else if (input == "z2") { this->move("f2", this->n); continue; }
-
-  //   bool to_continue = false;
-  //   while (!this->is_valid_move(input)) {
-  //     std::cout << "Invalid move, try again: ";
-  //     if (!(std::cin >> input)) {
-  //       std::cout << std::endl;
-  //       return;
-  //     }
-  //     input = util::string_lower(input);
-
-  //     if      (input == "x")  { this->move("r",  this->n); to_continue = true; }
-  //     else if (input == "xi") { this->move("ri", this->n); to_continue = true; }
-  //     else if (input == "x2") { this->move("r2", this->n); to_continue = true; }
-  //     else if (input == "y")  { this->move("u",  this->n); to_continue = true; }
-  //     else if (input == "yi") { this->move("ui", this->n); to_continue = true; }
-  //     else if (input == "y2") { this->move("u2", this->n); to_continue = true; }
-  //     else if (input == "z")  { this->move("f",  this->n); to_continue = true; }
-  //     else if (input == "zi") { this->move("fi", this->n); to_continue = true; }
-  //     else if (input == "z2") { this->move("f2", this->n); to_continue = true; }
-
-  //     if (input == "done") { return; }
-  //   }
-  //   if (to_continue) { continue; }
-    
-  //   std::string side = input;
-
-  //   std::cout << "How many layers?: " ;
-  //   std::cin >> input;
-  //   input = util::string_lower(input);
-
-  //   if(input == "done") { return; }
-
-  //   while (!this->is_valid_depth(input)) {
-  //     std::cout << "Invalid number of layers, try again: ";
-  //     if (!(std::cin >> input)) {
-  //       std::cout << std::endl;
-  //       return;
-  //     }
-  //     input = util::string_lower(input);
-
-  //     if(input == "done") { return; }
-  //   }
-  //   int layers = std::stoi(input);
-
-  //   this->move(side, layers);
-  // }
 }
 
 std::ostream &operator<<(std::ostream &os, NxNCube::color val) {
