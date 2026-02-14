@@ -4,7 +4,7 @@ CXX ?= g++
 
 CXXFLAGS ?= -Wall -Werror -pedantic -g -Wno-sign-compare -Wno-comment --std=c++17 -Wall -Werror -pedantic -g -fsanitize=address -fsanitize=undefined -D_GLIBCXX_DEBUG
 
-INCLUDE = inc
+INCLUDE = include
 
 all: build/nxncube
 
