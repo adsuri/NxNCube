@@ -44,7 +44,17 @@ namespace util {
    */
   std::string string_lower(std::string str);
 
-  // OVERWRITES OUTPUT VECTOR
+  /**
+   * @brief Prompts user for input, parsing it into a vector
+   * 
+   * Overwrites `*output`
+   * 
+   * Sets `*output` to {`"EMPTY_INPUT"`} if no input was given
+   * 
+   * @param output Address of vector to put inputs into
+   * @return `true` if parsing was successful, `false` if EOF
+   * 
+   */
   bool grab_input(std::vector<std::string> *output);
 }
 

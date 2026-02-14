@@ -151,10 +151,30 @@ class NxNCube {
    */
   void move(const std::string &move, int depth);
 
+  /**
+   * @brief Scrambles the cube
+   * 
+   * Scramble length grows roughly with n^2 / log n
+   * 
+   */
   void scramble();
 
+  /**
+   * @brief Attempts to split a `string` using a dash
+   * 
+   * @param str Move to split
+   * @return `std::pair` containing each part, {"BAD_MOVE", "BAD_MOVE"} otherwise
+   * 
+   */
   SplitMove split_move(const std::string &str) const;
 
+  /**
+   * @brief Attempts to parse a move from a string
+   * 
+   * @param str `string` to parse
+   * @return `std::pair` containing move information, {"BAD_MOVE", -1} otherwise
+   * 
+   */
   MovePair grab_move_pair(const std::string &str) const;
 
  public:
