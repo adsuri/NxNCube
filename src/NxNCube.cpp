@@ -29,7 +29,9 @@ NxNCube::NxNCube(int layers, bool blocks)
    m_front(n * n, NxNCube::color::GREEN),
    m_right(n * n, NxNCube::color::RED),
    m_back(n * n, NxNCube::color::BLUE),
-   m_bottom(n * n, NxNCube::color::YELLOW) {
+   m_bottom(n * n, NxNCube::color::YELLOW),
+   m_solve_state(NOT_SOLVING),
+   m_start_time() {
     NxNCube::BLOCKS = blocks;
 }
 
@@ -127,10 +129,6 @@ void NxNCube::draw() {
     std::cout << std::endl;
   }
   std::cout << NxNCube::color::RESET;
-  
-  if (m_last_error != "") {
-    std::cout << m_last_error << std::endl;
-  }
 }
 
 void NxNCube::clear_console() const {
@@ -576,6 +574,36 @@ void NxNCube::play() {
 
   while (true) {
     this->clear_draw();
+
+    switch (m_solve_state) {
+      case NOT_SOLVING: {
+        break;
+      }
+      case WAITING_TO_START: {
+        m_last_solve_msg = "Timer will start when you enter a valid move or scramble the cube.";
+        break;
+      }
+      case SOLVING: {
+        auto curr_time = std::chrono::steady_clock::now();
+        double elapsed_time = std::chrono::duration<double>(curr_time - m_start_time).count();
+
+        m_last_solve_msg = util::format_time(elapsed_time);
+        break;
+      }
+      case JUST_FINISHED: {
+
+        m_solve_state = NOT_SOLVING;
+        break;
+      }
+    }
+    if (m_last_solve_msg != "") {
+      std::cout << m_last_solve_msg << std::endl;
+    }
+    m_last_solve_msg = "";
+
+    if (m_last_error != "") {
+      std::cout << m_last_error << std::endl;
+    }
     m_last_error = "";
 
     std::vector<std::string> args;
@@ -611,6 +639,11 @@ void NxNCube::play() {
       if (are_moves_valid) {
         for (const MovePair &curr_move : moves_to_do) {
           this->move(curr_move.first, curr_move.second);
+        } 
+
+        if (m_solve_state == WAITING_TO_START) {
+          m_solve_state = SOLVING;
+          m_start_time = std::chrono::steady_clock::now();
         }
       }
     } else if (args[0] == "scramble") {
@@ -618,7 +651,14 @@ void NxNCube::play() {
         m_last_error = "\033[1;38;2;255;0;0;49m`scramble` has no arguments\033[0m";
       } else {
         this->scramble();
+        if (m_solve_state == WAITING_TO_START) {
+          m_solve_state = SOLVING;
+          m_start_time = std::chrono::steady_clock::now();
+        }
       }
+    } else if (args[0] == "time-solve") {
+      m_solve_state = WAITING_TO_START;
+      this->scramble();
     } else if (args[0] == "exit") {
       return;
     } else if (args[0] == "reset") {
@@ -628,6 +668,7 @@ void NxNCube::play() {
       m_right = Face(this->n * this->n, NxNCube::color::RED);
       m_back = Face(this->n * this->n, NxNCube::color::BLUE);
       m_bottom = Face(this->n * this->n, NxNCube::color::YELLOW);
+      m_solve_state = NOT_SOLVING;
     } else {
       std::cout << "You shouldn't have gotten here..." << std::endl;
       assert(false);

@@ -58,3 +58,69 @@ bool util::grab_input(std::vector<std::string> *output) {
 
   return true;
 }
+
+std::string util::format_time(double val) {
+  std::string hours_str = "";
+  std::string minutes_str = "";
+  std::string seconds_str = "";
+  int hours = 0;
+  int minutes = 0;
+
+  if (val > 3600) {
+    hours = static_cast<int>(val / 3600);
+
+    val -= hours * 3600.0;
+    hours_str += std::to_string(hours);
+  }
+
+  if (val > 60) {
+    minutes = static_cast<int>(val / 60);
+
+    val -= minutes * 60.0;
+    minutes_str += std::to_string(minutes);
+  }
+
+  // truncate to three places
+  val = static_cast<double>(static_cast<int>(val * 1000.0)) / 1000.0;
+  std::string temp_seconds_str = std::to_string(val);
+  if (val < 10) {
+    for (int i = 0; i < 5; ++i) {
+      seconds_str += temp_seconds_str[i];
+    }
+  } else {
+    for (int i = 0; i < 6; ++i) {
+      seconds_str += temp_seconds_str[i];
+    }
+  }
+
+  std::string result = "";
+  if (hours_str != "") {
+    result += hours_str;
+    result += ":";
+    if (minutes < 10) {
+      result += "0";
+      result += minutes_str;
+    } else {
+      result += minutes_str;
+    }
+    result += ":";
+    if (val < 10) {
+      result += "0";
+      result += seconds_str;
+    } else {
+      result += seconds_str;
+    }
+  } else if (minutes_str != "") {
+    result += minutes_str;
+    result += ":";
+    if (val < 10) {
+      result += "0";
+      result += seconds_str;
+    } else {
+      result += seconds_str;
+    }
+  } else {
+    result += seconds_str;
+  }
+  return result;
+}

@@ -56,6 +56,8 @@ namespace util {
    * 
    */
   bool grab_input(std::vector<std::string> *output);
+
+  std::string format_time(double val);
 }
 
 #endif
