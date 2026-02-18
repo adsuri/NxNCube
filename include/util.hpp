@@ -57,6 +57,14 @@ namespace util {
    */
   bool grab_input(std::vector<std::string> *output);
 
+
+  /**
+   * @brief Formats a duration into (HH:)(MM:)SS.XXX format
+   * 
+   * @param val duration to parse
+   * @return `string` representing formatted time
+   * 
+   */
   std::string format_time(double val);
 }
 
