@@ -17,7 +17,6 @@ Instructions:
       - `exit` to leave the program
 
 TODO:
-  * Solve check with timer
   * Split up NxNCube class into a "pure" cube class and a separate controller class
     * Would make it easier to use like a library
   * Clean up code for cube turns (maybe)
