@@ -20,8 +20,10 @@
 #include "util.hpp"
 
 bool util::is_positive_int(const std::string &str) {
+  if (str == "") { return false; }
+
   for (size_t i = 0; i < str.size(); ++i) {
-    if (!std::isdigit(str[i])) {
+    if (!std::isdigit(static_cast<unsigned char>(str[i]))) {
       return false;
     }
   }
@@ -51,10 +53,6 @@ bool util::grab_input(std::vector<std::string> *output) {
   output->clear();
   while (is >> current_str) {
     output->push_back(current_str);
-  }
-
-  if (output->size() == 0) {
-    output->push_back("EMPTYINPUT"); // handle weird empty vector errors
   }
 
   return true;

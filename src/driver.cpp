@@ -23,7 +23,7 @@ void restore_terminal(int sig) {
 }
 
 int main(int argc, char *argv[]) {
-  const std::string arg_error = "USAGE: ./game.exe LAYERS [letters]";
+  const std::string arg_error = "USAGE: nxncube LAYERS [letters]";
 
   if (!(argc == 2 || argc == 3)) {
     std::cout << arg_error << std::endl;

@@ -33,6 +33,13 @@ NxNCube::NxNCube(int layers, bool blocks)
    m_solve_state(NOT_SOLVING),
    m_start_time() {
     NxNCube::BLOCKS = blocks;
+
+    m_face_addresses = {&m_top,
+                        &m_left,
+                        &m_front,
+                        &m_right,
+                        &m_back,
+                        &m_bottom};
 }
 
 int NxNCube::idx(int r, int c) const noexcept {
@@ -563,10 +570,24 @@ NxNCube::MovePair NxNCube::grab_move_pair(const std::string &str) const {
   SplitMove move = this->split_move(str);
 
   if (!this->is_valid_depth(move.first)) { return BAD_MOVE; }
-  // ex: 2-x is invalid
-  if (move.second == "BAD_MOVE" || (!util::str_in_vector(NxNCube::VALID_MOVES_NO_ROTATIONS, move.second))) { return BAD_MOVE; }
+  if (move.second == "BAD_MOVE" || (!util::str_in_vector(NxNCube::VALID_MOVES_NO_ROTATIONS, move.second))) {
+    return BAD_MOVE;
+  }
 
   return {move.second, std::stoi(move.first)};
+}
+
+bool NxNCube::is_solved() const {
+  for (const Face * const face : m_face_addresses) {
+    NxNCube::color first = (*face)[0];
+
+    for (int i = 1; i < this->n * this->n; ++i) {
+      if ((*face)[i] != first) {
+        return false;
+      }
+    }
+  }
+  return true;
 }
 
 void NxNCube::play() {
@@ -584,18 +605,20 @@ void NxNCube::play() {
         break;
       }
       case SOLVING: {
-        auto curr_time = std::chrono::steady_clock::now();
-        double elapsed_time = std::chrono::duration<double>(curr_time - m_start_time).count();
+        m_curr_time = std::chrono::steady_clock::now();
+        double elapsed_time = std::chrono::duration<double>(m_curr_time - m_start_time).count();
 
-        m_last_solve_msg = util::format_time(elapsed_time);
-        break;
-      }
-      case JUST_FINISHED: {
+        if (this->is_solved()) {
+          m_solve_state = NOT_SOLVING;
+          m_last_solve_msg += "Solved! Time was: ";
+        }
 
-        m_solve_state = NOT_SOLVING;
+        m_last_solve_msg += util::format_time(elapsed_time);
+
         break;
       }
     }
+
     if (m_last_solve_msg != "") {
       std::cout << m_last_solve_msg << std::endl;
     }
@@ -608,6 +631,11 @@ void NxNCube::play() {
 
     std::vector<std::string> args;
     if (!util::grab_input(&args)) { return; } // handles EOF
+    
+    if (args.size() == 0) {
+      m_last_error = "\033[1;38;2;255;0;0;49mEnter a valid command or list of moves\033[0m";
+      continue;
+    }
 
     bool is_cmd = util::str_in_vector(NxNCube::CMD_LIST, args[0]);
     bool is_move = (this->grab_move_pair(args[0])).first != "BAD_MOVE";

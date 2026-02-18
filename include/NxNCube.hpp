@@ -34,8 +34,7 @@ class NxNCube {
   enum solve_state {
     NOT_SOLVING,
     WAITING_TO_START,
-    SOLVING,
-    JUST_FINISHED
+    SOLVING
   };
 
   using Face = std::vector<NxNCube::color>; 
@@ -54,6 +53,9 @@ class NxNCube {
   solve_state m_solve_state;
   std::string m_last_solve_msg;
   std::chrono::steady_clock::time_point m_start_time;
+  std::chrono::steady_clock::time_point m_curr_time;
+
+  std::vector<Face*> m_face_addresses;
 
   inline static bool BLOCKS;
 
@@ -189,6 +191,8 @@ class NxNCube {
    * 
    */
   MovePair grab_move_pair(const std::string &str) const;
+
+  bool is_solved() const;
 
  public:
   /**
