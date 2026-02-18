@@ -31,15 +31,7 @@ class NxNCube {
     RESET
   };
 
-  enum solve_state {
-    NOT_SOLVING,
-    WAITING_TO_START,
-    SOLVING
-  };
-
-  using Face = std::vector<NxNCube::color>; 
-  using MovePair = std::pair<std::string, int>;
-  using SplitMove = std::pair<std::string, std::string>;
+  using Face = std::vector<NxNCube::color>;
 
   Face m_top;
   Face m_left;
@@ -47,13 +39,6 @@ class NxNCube {
   Face m_right;
   Face m_back;
   Face m_bottom;
-
-  std::string m_last_error;
-
-  solve_state m_solve_state;
-  std::string m_last_solve_msg;
-  std::chrono::steady_clock::time_point m_start_time;
-  std::chrono::steady_clock::time_point m_curr_time;
 
   std::vector<Face*> m_face_addresses;
 
@@ -75,29 +60,7 @@ class NxNCube {
                                                         "\033[1;38;2;255;255;0;49mY ",
                                                         "\033[0m"};
   friend std::ostream &operator<<(std::ostream &os, NxNCube::color val);
-
-  inline static const std::vector<std::string> VALID_MOVES = {"u", "ui", "u2",
-                                                              "l", "li", "l2",
-                                                              "f", "fi", "f2",
-                                                              "r", "ri", "r2",
-                                                              "b", "bi", "b2",
-                                                              "d", "di", "d2",
-                                                              "x", "xi", "x2",
-                                                              "y", "yi", "y2",
-                                                              "z", "zi", "z2"};
-
-  inline static const std::vector<std::string> VALID_MOVES_NO_ROTATIONS = {"u", "ui", "u2",
-                                                                           "l", "li", "l2",
-                                                                           "f", "fi", "f2",
-                                                                           "r", "ri", "r2",
-                                                                           "b", "bi", "b2",
-                                                                           "d", "di", "d2"};
-
-  inline static const std::vector<std::string> CMD_LIST = {"scramble",
-                                                           "time-solve",
-                                                           "exit",
-                                                           "reset"};
-
+  
   /**
    * @brief Converts a 2D index `[r][c]` to a 1D index for a `this->n` x `this->n` long vector
    * 
@@ -138,7 +101,32 @@ class NxNCube {
    */
   void rotate_half_turn(Face &face);
 
+ public:
+  inline static const std::vector<std::string> VALID_MOVES = {"u", "ui", "u2",
+                                                              "l", "li", "l2",
+                                                              "f", "fi", "f2",
+                                                              "r", "ri", "r2",
+                                                              "b", "bi", "b2",
+                                                              "d", "di", "d2",
+                                                              "x", "xi", "x2",
+                                                              "y", "yi", "y2",
+                                                              "z", "zi", "z2"};
+
+  inline static const std::vector<std::string> VALID_MOVES_NO_ROTATIONS = {"u", "ui", "u2",
+                                                                           "l", "li", "l2",
+                                                                           "f", "fi", "f2",
+                                                                           "r", "ri", "r2",
+                                                                           "b", "bi", "b2",
+                                                                           "d", "di", "d2"};
+
   /**
+   * @brief Construct a new NxNCube object
+   * 
+   * @param layers Number of layers in the cube (layers > 0)
+   */
+  NxNCube(int layers, bool blocks);
+
+    /**
    * @brief Checks if a `string` is a valid move for a turn
    * 
    * @param input Type of move
@@ -175,40 +163,6 @@ class NxNCube {
   void scramble();
 
   /**
-   * @brief Attempts to split a `string` using a dash
-   * 
-   * @param str Move to split
-   * @return `pair` containing each part, {"BAD_MOVE", "BAD_MOVE"} otherwise
-   * 
-   */
-  SplitMove split_move(const std::string &str) const;
-
-  /**
-   * @brief Attempts to parse a move from a string
-   * 
-   * @param str `string` to parse
-   * @return `pair` containing move information, {"BAD_MOVE", -1} otherwise
-   * 
-   */
-  MovePair grab_move_pair(const std::string &str) const;
-
-  /**
-   * @brief Checks if the cube is solved
-   * 
-   * @return `true` if solved, `false` otherwise
-   * 
-   */
-  bool is_solved() const;
-
- public:
-  /**
-   * @brief Construct a new NxNCube object
-   * 
-   * @param layers Number of layers in the cube (layers > 0)
-   */
-  NxNCube(int layers, bool blocks);
-
-  /**
    * @brief Displays a 2D net representing the state of the puzzle
    * 
    */
@@ -225,12 +179,14 @@ class NxNCube {
    * 
    */
   void clear_draw();
-  
+
   /**
-   * @brief Starts the main game loop
+   * @brief Checks if the cube is solved
+   * 
+   * @return `true` if solved, `false` otherwise
    * 
    */
-  void play();
+  bool is_solved() const;
 };
 
 std::ostream &operator<<(std::ostream &os, NxNCube::color val);

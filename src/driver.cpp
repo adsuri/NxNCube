@@ -15,6 +15,7 @@
 #include <csignal>
 
 #include "NxNCube.hpp"
+#include "CubeController.hpp"
 #include "util.hpp"
 
 void restore_terminal(int sig) {
@@ -54,12 +55,12 @@ int main(int argc, char *argv[]) {
   }
 
   const int n = std::stoi(argv[1]);
-  NxNCube cube(n, blocks);
+  CubeController controller(n, blocks);
 
   std::signal(SIGINT, restore_terminal);
   std::signal(SIGTERM, restore_terminal);
 
   std::system("tput smcup");
-  cube.play();
+  controller.play();
   restore_terminal(0);
 }

@@ -16,10 +16,13 @@ debug/util.o: src/util.cpp
 debug/NxNCube.o: src/NxNCube.cpp
 	$(CXX) -c $(CXXFLAGS) $^ -I $(INCLUDE) -o $@ --std=c++17
 
+debug/CubeController.o: src/CubeController.cpp
+	$(CXX) -c $(CXXFLAGS) $^ -I $(INCLUDE) -o $@ --std=c++17
+
 debug/driver.o: src/driver.cpp
 	$(CXX) -c $(CXXFLAGS) $^ -I $(INCLUDE) -o $@ --std=c++17
 
-debug/nxncube: debug/util.o debug/NxNCube.o debug/driver.o
+debug/nxncube: debug/util.o debug/NxNCube.o debug/CubeController.o debug/driver.o
 	$(CXX) $(CXXFLAGS) $^ -o debug/nxncube --std=c++17
 
 build/util.o: src/util.cpp
@@ -28,10 +31,13 @@ build/util.o: src/util.cpp
 build/NxNCube.o: src/NxNCube.cpp
 	$(CXX) -c $^ -I $(INCLUDE) -o $@ --std=c++17
 
+build/CubeController.o: src/CubeController.cpp
+	$(CXX) -c $^ -I $(INCLUDE) -o $@ --std=c++17
+
 build/driver.o: src/driver.cpp
 	$(CXX) -c $^ -I $(INCLUDE) -o $@ --std=c++17
 
-build/nxncube: build/util.o build/NxNCube.o build/driver.o
+build/nxncube: build/util.o build/NxNCube.o build/CubeController.o build/driver.o
 	$(CXX) $^ -o build/nxncube --std=c++17
 
 .SUFFIXES:
