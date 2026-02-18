@@ -18,3 +18,4 @@ Instructions:
 
 TODO:
   * Solve check with timer
+  * Clean up code for cube turns (maybe)

@@ -15,6 +15,7 @@
 #include <cctype>
 #include <iostream>
 #include <sstream>
+#include <iomanip>
 
 #include "util.hpp"
 
@@ -60,67 +61,30 @@ bool util::grab_input(std::vector<std::string> *output) {
 }
 
 std::string util::format_time(double val) {
-  std::string hours_str = "";
-  std::string minutes_str = "";
-  std::string seconds_str = "";
   int hours = 0;
   int minutes = 0;
 
-  if (val > 3600) {
-    hours = static_cast<int>(val / 3600);
+  std::ostringstream os;
 
-    val -= hours * 3600.0;
-    hours_str += std::to_string(hours);
-  }
+  hours = static_cast<int>(val / 3600);
+  val -= hours * 3600;
 
-  if (val > 60) {
-    minutes = static_cast<int>(val / 60);
-
-    val -= minutes * 60.0;
-    minutes_str += std::to_string(minutes);
-  }
-
+  minutes = static_cast<int>(val / 60);
+  val -= minutes * 60;
+  
   // truncate to three places
-  val = static_cast<double>(static_cast<int>(val * 1000.0)) / 1000.0;
-  std::string temp_seconds_str = std::to_string(val);
-  if (val < 10) {
-    for (int i = 0; i < 5; ++i) {
-      seconds_str += temp_seconds_str[i];
-    }
-  } else {
-    for (int i = 0; i < 6; ++i) {
-      seconds_str += temp_seconds_str[i];
-    }
-  }
+  val = static_cast<int>(val * 1000) / 1000.0;
 
-  std::string result = "";
-  if (hours_str != "") {
-    result += hours_str;
-    result += ":";
-    if (minutes < 10) {
-      result += "0";
-      result += minutes_str;
-    } else {
-      result += minutes_str;
-    }
-    result += ":";
-    if (val < 10) {
-      result += "0";
-      result += seconds_str;
-    } else {
-      result += seconds_str;
-    }
-  } else if (minutes_str != "") {
-    result += minutes_str;
-    result += ":";
-    if (val < 10) {
-      result += "0";
-      result += seconds_str;
-    } else {
-      result += seconds_str;
-    }
+  os << std::fixed << std::setprecision(3);
+  if (hours > 0) {
+    os << hours
+       << ":" << std::setw(2) << std::setfill('0') << minutes
+       << ":" << std::setw(6) << std::setfill('0') << val;
+  } else if (minutes > 0) {
+    os << minutes
+       << ":" << std::setw(6) << std::setfill('0') << val;
   } else {
-    result += seconds_str;
+    os << val;
   }
-  return result;
+  return os.str();
 }
