@@ -187,6 +187,8 @@ class NxNCube {
    * 
    */
   bool is_solved() const;
+
+  void reset();
 };
 
 std::ostream &operator<<(std::ostream &os, NxNCube::color val);

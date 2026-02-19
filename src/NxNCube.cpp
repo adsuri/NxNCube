@@ -544,6 +544,15 @@ bool NxNCube::is_solved() const {
   return true;
 }
 
+void NxNCube::reset() {
+  m_top = Face(this->n * this->n, NxNCube::color::WHITE);
+  m_left = Face(this->n * this->n, NxNCube::color::ORANGE);
+  m_front = Face(this->n * this->n, NxNCube::color::GREEN);
+  m_right = Face(this->n * this->n, NxNCube::color::RED);
+  m_back = Face(this->n * this->n, NxNCube::color::BLUE);
+  m_bottom = Face(this->n * this->n, NxNCube::color::YELLOW);
+}
+
 std::ostream &operator<<(std::ostream &os, NxNCube::color val) {
   if (NxNCube::BLOCKS) {
     os << NxNCube::STICKERS_BLOCKS[val];

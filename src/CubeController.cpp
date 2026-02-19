@@ -21,7 +21,7 @@
 
 CubeController::CubeController(int layers, bool blocks)
  : m_cube(layers, blocks),
-   m_solve_state(CubeController::NOT_SOLVING), 
+   m_solve_state(CubeController::solve_state::NOT_SOLVING), 
    m_start_time(),
    m_curr_time() {}
 
@@ -76,19 +76,19 @@ void CubeController::play() {
     m_cube.clear_draw();
 
     switch (m_solve_state) {
-      case NOT_SOLVING: {
+      case CubeController::solve_state::NOT_SOLVING: {
         break;
       }
-      case WAITING_TO_START: {
+      case CubeController::solve_state::WAITING_TO_START: {
         m_last_solve_msg = "Timer will start when you enter a valid move or scramble the cube.";
         break;
       }
-      case SOLVING: {
+      case CubeController::solve_state::SOLVING: {
         m_curr_time = std::chrono::steady_clock::now();
         double elapsed_time = std::chrono::duration<double>(m_curr_time - m_start_time).count();
 
         if (m_cube.is_solved()) {
-          m_solve_state = NOT_SOLVING;
+          m_solve_state = CubeController::solve_state::NOT_SOLVING;
           m_last_solve_msg += "Solved! Time was: ";
         }
 
@@ -127,15 +127,50 @@ void CubeController::play() {
     }
 
     if (is_move) {
+      std::vector<MovePair> moves_to_do;
+      bool are_moves_valid = true;
 
+      for (int i = 0; i < args.size(); ++i) {
+        MovePair curr_pair = this->grab_move_pair(args[i]);
+        if (curr_pair.first == "BAD_MOVE") {
+          m_last_error = "\033[1;38;2;255;0;0;49m`";
+          m_last_error += args[i];
+          m_last_error += "` is not a valid move\033[0m";
+          are_moves_valid = false;
+          continue;
+        }
+
+        moves_to_do.push_back(curr_pair);
+      }
+
+      if (are_moves_valid) {
+        for (const MovePair &curr_move : moves_to_do) {
+          m_cube.move(curr_move.first, curr_move.second);
+        } 
+
+        if (m_solve_state == CubeController::solve_state::WAITING_TO_START) {
+          m_solve_state = CubeController::solve_state::SOLVING;
+          m_start_time = std::chrono::steady_clock::now();
+        }
+      }
     } else if (args[0] == "scramble") {
-      
+      if (args.size() != 1) {
+        m_last_error = "\033[1;38;2;255;0;0;49m`scramble` has no arguments\033[0m";
+      } else {
+        m_cube.scramble();
+        if (m_solve_state == CubeController::solve_state::WAITING_TO_START) {
+          m_solve_state = SOLVING;
+          m_start_time = std::chrono::steady_clock::now();
+        }
+      }
     } else if (args[0] == "time-solve") {
-
+      m_solve_state = CubeController::solve_state::WAITING_TO_START;
+      m_cube.scramble();
     } else if (args[0] == "exit") {
-
+      return;
     } else if (args[0] == "reset") {
-
+      m_cube.reset();
+      m_solve_state = CubeController::solve_state::NOT_SOLVING;
     } else {
       std::cout << "You shouldn't have gotten here..." << std::endl;
       assert(false);
