@@ -17,7 +17,6 @@
 #include <cmath>
 #include <chrono>
 #include <random>
-#include <sstream>
 
 #include "NxNCube.hpp"
 #include "util.hpp"
