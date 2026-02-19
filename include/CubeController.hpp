@@ -44,13 +44,31 @@ class CubeController {
                                                            "exit",
                                                            "reset"};
 
+  /**
+   * @brief Attempts to split a `string` using a dash
+   * 
+   * @param str Move to split
+   * @return `pair` containing each part, {"BAD_MOVE", "BAD_MOVE"} otherwise
+   * 
+   */
   SplitMove split_move(const std::string &str) const;
 
+  /**
+   * @brief Attempts to parse a move from a string
+   * 
+   * @param str `string` to parse
+   * @return `pair` containing move information, {"BAD_MOVE", -1} otherwise
+   * 
+   */
   MovePair grab_move_pair(const std::string &str) const;
 
  public:
   CubeController(int layers, bool blocks);
 
+  /**
+   * @brief Starts the main game loop
+   * 
+   */
   void play();
 };
 

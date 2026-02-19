@@ -188,6 +188,11 @@ class NxNCube {
    */
   bool is_solved() const;
 
+
+  /**
+   * @brief Resets the cube to a solved state
+   * 
+   */
   void reset();
 };
 
