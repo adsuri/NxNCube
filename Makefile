@@ -1,46 +1,46 @@
 # Makefile
 
 CXX ?= g++
+SRC_DIR := src
+INCLUDE_DIR := include
+BUILD_DIR := build
+DEBUG_DIR := debug
 
-CXXFLAGS ?= -Wall -Werror -pedantic -g -Wno-sign-compare -Wno-comment --std=c++17 -Wall -Werror -pedantic -g -fsanitize=address -fsanitize=undefined -D_GLIBCXX_DEBUG
+EXE := nxncube
 
-INCLUDE = include
+SRCS := $(wildcard $(SRC_DIR)/*.cpp)
 
-all: build/nxncube
+BUILD_OBJS := $(SRCS:$(SRC_DIR)/%.cpp=$(BUILD_DIR)/%.o)
+DEBUG_OBJS := $(SRCS:$(SRC_DIR)/%.cpp=$(DEBUG_DIR)/%.o)
 
-debug: debug/nxncube
+COMMON := -Wall -Werror -Wno-sign-compare -Wno-comment -pedantic -std=c++17 -I $(INCLUDE_DIR)
 
-debug/util.o: src/util.cpp
-	$(CXX) -c $(CXXFLAGS) $^ -I $(INCLUDE) -o $@ --std=c++17
+CXXFLAGS := $(COMMON)
+DEBUG_FLAGS := $(COMMON) -g -fsanitize=address -fsanitize=undefined -D_GLIBCXX_DEBUG
 
-debug/NxNCube.o: src/NxNCube.cpp
-	$(CXX) -c $(CXXFLAGS) $^ -I $(INCLUDE) -o $@ --std=c++17
+all: $(BUILD_DIR)/$(EXE)
+debug: $(DEBUG_DIR)/$(EXE)
 
-debug/CubeController.o: src/CubeController.cpp
-	$(CXX) -c $(CXXFLAGS) $^ -I $(INCLUDE) -o $@ --std=c++17
+$(BUILD_DIR)/$(EXE): $(BUILD_OBJS)
+	$(CXX) $^ -o $@
 
-debug/driver.o: src/driver.cpp
-	$(CXX) -c $(CXXFLAGS) $^ -I $(INCLUDE) -o $@ --std=c++17
+$(DEBUG_DIR)/$(EXE): $(DEBUG_OBJS)
+	$(CXX) $(DEBUG_FLAGS) $^ -o $@
 
-debug/nxncube: debug/util.o debug/NxNCube.o debug/CubeController.o debug/driver.o
-	$(CXX) $(CXXFLAGS) $^ -o debug/nxncube --std=c++17
+$(BUILD_DIR)/%.o: $(SRC_DIR)/%.cpp
+	@mkdir -p $(dir $@)
+	$(CXX) $(CXXFLAGS) -c $< -o $@
 
-build/util.o: src/util.cpp
-	$(CXX) -c $^ -I $(INCLUDE) -o $@ --std=c++17
+$(DEBUG_DIR)/%.o: $(SRC_DIR)/%.cpp
+	@mkdir -p $(dir $@)
+	$(CXX) $(DEBUG_FLAGS) -c $< -o $@
 
-build/NxNCube.o: src/NxNCube.cpp
-	$(CXX) -c $^ -I $(INCLUDE) -o $@ --std=c++17
-
-build/CubeController.o: src/CubeController.cpp
-	$(CXX) -c $^ -I $(INCLUDE) -o $@ --std=c++17
-
-build/driver.o: src/driver.cpp
-	$(CXX) -c $^ -I $(INCLUDE) -o $@ --std=c++17
-
-build/nxncube: build/util.o build/NxNCube.o build/CubeController.o build/driver.o
-	$(CXX) $^ -o build/nxncube --std=c++17
-
-.SUFFIXES:
+$(BUILD_DIR):
+	mkdir -p $(BUILD_DIR)
+$(DEBUG_DIR):
+	mkdir -p $(DEBUG_DIR)
 
 clean:
-	rm -rvf build/* debug/*
+	rm -rf $(BUILD_DIR) $(DEBUG_DIR)
+
+.PHONY: all debug clean

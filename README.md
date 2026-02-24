@@ -7,7 +7,6 @@ Intended for use with WSL/Linux.
   1. Clone into this repository
   2. To build the executable, run these commands in your terminal in the project directory:
       ```bash
-      mkdir build
       make
       ```
   3. To run the executable, run this command in the project directory:
@@ -22,4 +21,5 @@ Intended for use with WSL/Linux.
       - `exit` to leave the program
 
 ## TODO
+  - Add saving and loading feature
   - Clean up code for cube turns (maybe)
