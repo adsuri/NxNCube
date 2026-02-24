@@ -5,7 +5,7 @@ Intended for use with WSL/Linux.
 
 ## Instructions:
   1. Clone into this repository
-  2. To build the executable, run these commands in your terminal in the project directory:
+  2. To build the executable, run this command in your terminal in the project directory:
       ```bash
       make
       ```
