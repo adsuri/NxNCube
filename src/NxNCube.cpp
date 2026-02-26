@@ -650,12 +650,16 @@ std::pair<bool, bool> NxNCube::load_state(const std::string &filename) {
         case 'Y':
           temp_face.push_back(NxNCube::color::YELLOW);
           break;
+        default:
+          return FAILED_LOAD;
+          break;
       }
     }
   }
 
   if (!std::getline(file, input)) { return FAILED_LOAD; }
   if (input != "-1") { return FAILED_LOAD; }
+  if (!file.good()) { return FAILED_LOAD; }
 
   for (int i = 0; i < 6; ++i) {
     Face &temp_face = *(temp_face_addresses[i]);
