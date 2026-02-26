@@ -195,9 +195,18 @@ class NxNCube {
    */
   void reset();
 
+  /**
+   * @brief Saves the cube state to a file to be loaded later.
+   * 
+   * @param filename Path to save to: must be an absolute or home-relative path ending with `.nxn`.
+   * 
+   * @return `true` if save was successful, `false` otherwise
+   * 
+   */
   bool save_state(const std::string &filename);
 
-  bool load_state(const std::string &filename);
+  // second bool is for potential solve time resuming
+  std::pair<bool, bool> load_state(const std::string &filename);
 };
 
 std::ostream &operator<<(std::ostream &os, NxNCube::color val);

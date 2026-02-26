@@ -24,7 +24,8 @@ CubeController::CubeController(int layers, bool blocks)
  : m_cube(layers, blocks),
    m_solve_state(CubeController::solve_state::NOT_SOLVING), 
    m_start_time(),
-   m_curr_time() {}
+   m_curr_time(),
+   m_time_offset() {}
 
 CubeController::SplitMove CubeController::split_move(const std::string &str) const {
   const SplitMove BAD_MOVE = {"BAD_MOVE", "BAD_MOVE"};
@@ -231,6 +232,43 @@ void CubeController::play() {
         m_solve_state = CubeController::solve_state::NOT_SOLVING;
       } // this might change later
 
+      if (args.size() != 2) {
+        m_last_error = "\033[1;38;2;255;0;0;49mPlease enter an .nxn file name to Load from. It should be an absolute or home-relative path.\033[0m";
+      } else {
+        std::string filename = args_cap[1];
+
+        if (!filename.empty() && filename[0] == '~') {
+          const char* home = std::getenv("HOME");
+          if (!home) {
+              m_last_error = "\033[1;38;2;255;0;0;49mCould not find home directory\033[0m";
+              return;
+          }
+
+          if (filename.size() == 1) {
+            filename = home;
+          } else if (filename[1] == '/') {
+            filename = std::string(home) + filename.substr(1);
+          } else {
+            m_last_error = "\033[1;38;2;255;0;0;49mKeep your hands out of other users' directories.\033[0m";
+            return;
+          }
+        }
+        
+        std::filesystem::path file_path(filename);
+
+        bool valid = file_path.extension() == ".nxn" && file_path.is_absolute();
+
+        if (valid) {
+          if (!m_cube.load_state(filename).first) {
+            m_last_error = "\033[1;38;2;255;0;0;49mLoading failed... You may have a save file that is malformed or meant for a cube of a different size.\033[0m";
+          } else {
+            m_last_error = "Loaded cube state successfully from: ";
+            m_last_error += file_path.string();
+          }
+        } else {
+          m_last_error = "\033[1;38;2;255;0;0;49mEnter a filename ending with `.nxn`. It must be an absolute or home-relative path.\033[0m";
+        }
+      }
     } else {
       std::cout << "You shouldn't have gotten here..." << std::endl;
       assert(false);

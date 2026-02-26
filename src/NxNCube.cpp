@@ -562,7 +562,7 @@ bool NxNCube::save_state(const std::string &filename) {
     return false;
   }
 
-  file << "nxn " << this->n << '\n';
+  file << "nxn\n" << this->n << '\n';
   for (int i = 0; i < 6; ++i) {
     Face &face = *(m_face_addresses[i]);
 
@@ -592,13 +592,78 @@ bool NxNCube::save_state(const std::string &filename) {
     }
     file << '\n';
   }
-  file << -1; // saved for potential solve time saving
+  file << -1 << '\n'; // saved for potential solve time saving
 
   return file.good();
 }
 
-bool NxNCube::load_state(const std::string &filename) {
-  return true;
+std::pair<bool, bool> NxNCube::load_state(const std::string &filename) {
+  const std::pair<bool, bool> FAILED_LOAD = {false, false};
+  if (std::filesystem::path(filename).extension() != ".nxn") { return FAILED_LOAD; }
+
+  std::string input;
+  std::ifstream file(filename);
+  if (!file.is_open()) { return FAILED_LOAD; }
+
+  if (!std::getline(file, input)) { return FAILED_LOAD; }
+  if (input != "nxn") { return FAILED_LOAD; }
+
+  if (!std::getline(file, input)) { return FAILED_LOAD; }
+  if (input != std::to_string(this->n)) { return FAILED_LOAD; }
+  
+  Face temp_top;
+  Face temp_left;
+  Face temp_front;
+  Face temp_right;
+  Face temp_back;
+  Face temp_bottom;
+  std::vector<Face*> temp_face_addresses = {&temp_top,
+                                            &temp_left,
+                                            &temp_front,
+                                            &temp_right,
+                                            &temp_back,
+                                            &temp_bottom};
+
+  for (int i = 0; i < 6; ++i) {
+    Face &temp_face = *(temp_face_addresses[i]);
+
+    if (!std::getline(file, input)) { return FAILED_LOAD; }
+    if (input.length() != this->n * this->n) { return FAILED_LOAD; }
+
+    for (int j = 0; j < this->n * this->n; ++j) {
+      switch (input[j]) {
+        case 'W':
+          temp_face.push_back(NxNCube::color::WHITE);
+          break;
+        case 'O':
+          temp_face.push_back(NxNCube::color::ORANGE);
+          break;
+        case 'G':
+          temp_face.push_back(NxNCube::color::GREEN);
+          break;
+        case 'R':
+          temp_face.push_back(NxNCube::color::RED);
+          break;
+        case 'B':
+          temp_face.push_back(NxNCube::color::BLUE);
+          break;
+        case 'Y':
+          temp_face.push_back(NxNCube::color::YELLOW);
+          break;
+      }
+    }
+  }
+
+  if (!std::getline(file, input)) { return FAILED_LOAD; }
+  if (input != "-1") { return FAILED_LOAD; }
+
+  for (int i = 0; i < 6; ++i) {
+    Face &temp_face = *(temp_face_addresses[i]);
+    Face &member_face = *(m_face_addresses[i]);
+    member_face = temp_face;
+  }
+
+  return {true, false};
 }
 
 std::ostream &operator<<(std::ostream &os, NxNCube::color val) {

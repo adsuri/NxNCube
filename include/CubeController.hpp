@@ -38,6 +38,7 @@ class CubeController {
   std::string m_last_solve_msg;
   std::chrono::steady_clock::time_point m_start_time;
   std::chrono::steady_clock::time_point m_curr_time;
+  double m_time_offset; // in milliseconds
 
   inline static const std::vector<std::string> CMD_LIST = {"scramble",
                                                            "time-solve",
