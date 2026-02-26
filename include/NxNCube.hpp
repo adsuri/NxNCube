@@ -194,6 +194,10 @@ class NxNCube {
    * 
    */
   void reset();
+
+  bool save_state(const std::string &filename);
+
+  bool load_state(const std::string &filename);
 };
 
 std::ostream &operator<<(std::ostream &os, NxNCube::color val);

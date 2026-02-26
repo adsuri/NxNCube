@@ -17,6 +17,8 @@
 #include <cmath>
 #include <chrono>
 #include <random>
+#include <filesystem>
+#include <fstream>
 
 #include "NxNCube.hpp"
 #include "util.hpp"
@@ -550,6 +552,53 @@ void NxNCube::reset() {
   m_right = Face(this->n * this->n, NxNCube::color::RED);
   m_back = Face(this->n * this->n, NxNCube::color::BLUE);
   m_bottom = Face(this->n * this->n, NxNCube::color::YELLOW);
+}
+
+bool NxNCube::save_state(const std::string &filename) {
+  if (std::filesystem::path(filename).extension() != ".nxn") { return false; }
+
+  std::ofstream file(filename);
+  if (!file.is_open()) {
+    return false;
+  }
+
+  file << "nxn " << this->n << '\n';
+  for (int i = 0; i < 6; ++i) {
+    Face &face = *(m_face_addresses[i]);
+
+    for (const NxNCube::color sticker : face) {
+      switch (sticker) {
+        case NxNCube::color::WHITE:
+          file << 'W';
+          break;
+        case NxNCube::color::ORANGE:
+          file << 'O';
+          break;
+        case NxNCube::color::GREEN:
+          file << 'G';
+          break;
+        case NxNCube::color::RED:
+          file << 'R';
+          break;
+        case NxNCube::color::BLUE:
+          file << 'B';
+          break;
+        case NxNCube::color::YELLOW:
+          file << 'Y';
+          break;
+        case NxNCube::color::RESET:
+          break;
+      }
+    }
+    file << '\n';
+  }
+  file << -1; // saved for potential solve time saving
+
+  return file.good();
+}
+
+bool NxNCube::load_state(const std::string &filename) {
+  return true;
 }
 
 std::ostream &operator<<(std::ostream &os, NxNCube::color val) {

@@ -14,6 +14,7 @@
 #include <vector>
 #include <chrono>
 #include <cassert>
+#include <filesystem>
 
 #include "CubeController.hpp"
 #include "NxNCube.hpp"
@@ -109,7 +110,11 @@ void CubeController::play() {
     m_last_error = "";
 
     std::vector<std::string> args;
-    if (!util::grab_input(&args)) { return; } // handles EOF
+    std::vector<std::string> args_cap; // preserves capitalization
+    if (!util::grab_input(&args_cap)) { return; } // handles EOF
+    for (int i = 0; i < args_cap.size(); ++i) {
+      args.push_back(util::string_lower(args_cap[i]));
+    }
     
     if (args.size() == 0) {
       m_last_error = "\033[1;38;2;255;0;0;49mEnter a valid command or list of moves\033[0m";
@@ -153,6 +158,7 @@ void CubeController::play() {
           m_start_time = std::chrono::steady_clock::now();
         }
       }
+      
     } else if (args[0] == "scramble") {
       if (args.size() != 1) {
         m_last_error = "\033[1;38;2;255;0;0;49m`scramble` has no arguments\033[0m";
@@ -163,14 +169,68 @@ void CubeController::play() {
           m_start_time = std::chrono::steady_clock::now();
         }
       }
+
     } else if (args[0] == "time-solve") {
       m_solve_state = CubeController::solve_state::WAITING_TO_START;
       m_cube.scramble();
+
     } else if (args[0] == "exit") {
       return;
+
     } else if (args[0] == "reset") {
       m_cube.reset();
       m_solve_state = CubeController::solve_state::NOT_SOLVING;
+
+    } else if (args[0] == "save") {
+      // save state
+      if (m_solve_state != CubeController::solve_state::NOT_SOLVING) {
+        m_solve_state = CubeController::solve_state::NOT_SOLVING;
+      } // this might change later
+
+      if (args.size() != 2) {
+        m_last_error = "\033[1;38;2;255;0;0;49mPlease enter an .nxn file name to save to. It should be an absolute or home-relative path.\033[0m";
+      } else {
+        std::string filename = args_cap[1];
+
+        if (!filename.empty() && filename[0] == '~') {
+          const char* home = std::getenv("HOME");
+          if (!home) {
+              m_last_error = "\033[1;38;2;255;0;0;49mCould not find home directory\033[0m";
+              return;
+          }
+
+          if (filename.size() == 1) {
+            filename = home;
+          } else if (filename[1] == '/') {
+            filename = std::string(home) + filename.substr(1);
+          } else {
+            m_last_error = "\033[1;38;2;255;0;0;49mKeep your hands out of other users' directories.\033[0m";
+            return;
+          }
+        }
+        
+        std::filesystem::path file_path(filename);
+
+        bool valid = file_path.extension() == ".nxn" && file_path.is_absolute();
+
+        if (valid) {
+          if (!m_cube.save_state(filename)) {
+            m_last_error = "\033[1;38;2;255;0;0;49mSaving failed...\033[0m";
+          } else {
+            m_last_error = "Saved cube state successfully to: ";
+            m_last_error += file_path.string();
+          }
+        } else {
+          m_last_error = "\033[1;38;2;255;0;0;49mEnter a filename ending with `.nxn`. It must be an absolute or home-relative path.\033[0m";
+        }
+      }
+
+    } else if (args[0] == "load") {
+      // load state
+      if (m_solve_state != CubeController::solve_state::NOT_SOLVING) {
+        m_solve_state = CubeController::solve_state::NOT_SOLVING;
+      } // this might change later
+
     } else {
       std::cout << "You shouldn't have gotten here..." << std::endl;
       assert(false);

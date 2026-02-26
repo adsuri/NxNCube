@@ -4,6 +4,9 @@ main
 *.dSYM
 *.stackdump
 
+# Savestates
+*.[nN][xX][nN]
+
 # Cache
 .cache/
 .cache/clangd/

@@ -45,7 +45,7 @@ bool util::grab_input(std::vector<std::string> *output) {
   std::cout << "$ ";
 
   if (!std::getline(std::cin, input)) { return false; }
-  input = util::string_lower(input);
+  // input = util::string_lower(input);
 
   std::istringstream is(input);
 

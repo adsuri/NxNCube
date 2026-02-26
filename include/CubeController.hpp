@@ -42,7 +42,9 @@ class CubeController {
   inline static const std::vector<std::string> CMD_LIST = {"scramble",
                                                            "time-solve",
                                                            "exit",
-                                                           "reset"};
+                                                           "reset",
+                                                           "save",
+                                                           "load"};
 
   /**
    * @brief Attempts to split a `string` using a dash
